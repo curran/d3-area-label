@@ -15,14 +15,23 @@
       const height = +svg.attr('height')
       const n = 100
       const keys = ['Leonardo', 'Donatello', 'Raphael', 'Michelangelo']
-      const data = d3.range(n).map((d, i) => {
-        const row = {time: i}
-        keys.forEach(key => {
-          row[key] = Math.random()
+      const generateData = keys => {
+        const prev = {}
+        const velocity = {}
+        return d3.range(n).map((d, i) => {
+          const row = { time: i }
+          keys.forEach(key => {
+            velocity[key] = ((velocity[key] || 0) + (Math.random() - .5)) * 0.9
+            const value = Math.max(0.2, (prev[key] || Math.random() * 10) + velocity[key])
+            prev[key] = row[key] = value
+          })
+          return row
         })
-        return row
-      })
-      const stack = d3.stack().keys(keys)
+      }
+      const data = generateData(keys)
+      const stack = d3.stack()
+        .keys(keys)
+        .offset(d3.stackOffsetWiggle)
       const xValue = d => d.time
       const xScale = d3.scaleLinear()
       const yScale = d3.scaleLinear()
@@ -35,6 +44,7 @@
         .x(d => xScale(xValue(d.data)))
         .y0(d => yScale(d[0]))
         .y1(d => yScale(d[1]))
+        .curve(d3.curveBasis)
 
       const stacked = stack(data)
 
