@@ -47,8 +47,12 @@ export default function(area) {
   return function (data) {
     var aspect = getAspectRatio(this);
     var scale = 5;
+    while (fits(data, aspect, scale)) {
+      scale++;
+    }
+    scale--;
 
-    console.log(fits(data, aspect, scale));
+    console.log("scale = " + scale);
 
     //var d = data[0];
     //console.log(x(d), y0(d), y1(d));
