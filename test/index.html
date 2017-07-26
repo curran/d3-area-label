@@ -58,14 +58,30 @@
         ])
         .range([height, 0])
 
-      const paths = svg.selectAll('path').data(stacked);
-        paths
-          .enter().append('path')
-            .attr('fill-opacity', areaFillOpacity)
-          .merge(paths)
-            .attr('d', area)
-            .attr('fill', d => colorScale(d.key))
-            .attr('stroke', d => colorScale(d.key));
+      const paths = svg.selectAll('path').data(stacked)
+      paths
+        .enter().append('path')
+          .attr('fill-opacity', areaFillOpacity)
+        .merge(paths)
+          .attr('d', area)
+          .attr('fill', d => colorScale(d.key))
+          .attr('stroke', d => colorScale(d.key));
+
+      const position = area => function (d) {
+        console.log(this)
+        console.log(d)
+        d3.select(this)
+          .attr('x', 100 + Math.random() * 50)
+          .attr('y', 100 + Math.random() * 50)
+          .attr('font-size', Math.random() * 20 + 'px')
+      }
+      
+      const labels = svg.selectAll('text').data(stacked)
+      labels
+        .enter().append('text')
+        .merge(labels)
+          .text(d => d.key)
+          .each(position(area))
     </script>
   </body>
 </html>
