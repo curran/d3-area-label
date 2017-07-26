@@ -49,7 +49,7 @@
       const stacked = stack(data)
 
       xScale
-        .domain(d3.extent(data, xValue))
+        .domain(d3.extent(data, d => xScale(xValue(d))))
         .range([0, width])
       yScale
         .domain([

@@ -15,12 +15,18 @@ export default function(area) {
   function fits(data, aspect, scale) {
     var x0, x1, i0, i1, j, d, top, bottom, ceiling, floor,
         width = scale * aspect,
-        height = scale / aspect;
+        height = scale / aspect,
+        right = x(data[data.length - 1]);
 
     for(i0 = 0; i0 < data.length; i0++) {
       d = data[i0];
       x0 = x(d);
       x1 = x0 + width;
+
+      if (x1 > right) {
+        break;
+      }
+      
       i1 = bisectorX(data, x1);
       ceiling = -Infinity;
       floor = Infinity;
@@ -38,7 +44,10 @@ export default function(area) {
         }
       }
       if ((floor - ceiling) >= height) {
-        return true;
+        return {
+          x: (x0 + x1) / 2,
+          y: (floor + ceiling) / 2
+        };
       }
     }
     return false;
@@ -48,21 +57,24 @@ export default function(area) {
     var aspect = getAspectRatio(this);
 
     // Find largest integer scale where label would fit.
+    // TODO use Bisector method to speed up this part.
     var scale = 5;
     while (fits(data, aspect, scale)) {
       scale++;
     }
     scale--;
+    var fit = fits(data, aspect, scale);
 
-    console.log("scale = " + scale);
 
     //var d = data[0];
     //console.log(x(d), y0(d), y1(d));
 
     // This is how we could set the x, y, and font-size
     d3.select(this)
-      .attr('x', 300 + Math.random() * 200)
-      .attr('y', 200 + Math.random() * 200)
-      .attr('font-size', Math.random() * 40 + 'px');
+      .attr("x", fit.x)
+      .attr("y", fit.y)
+      .attr("text-anchor", "middle")
+      .attr("alignment-baseline", "middle")
+      .attr("font-size", Math.round(scale * 0.2) + "px")
   }
 };
