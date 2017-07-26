@@ -46,6 +46,8 @@ export default function(area) {
 
   return function (data) {
     var aspect = getAspectRatio(this);
+
+    // Find largest integer scale where label would fit.
     var scale = 5;
     while (fits(data, aspect, scale)) {
       scale++;
