@@ -21,6 +21,8 @@ export default function(area) {
         d,
         top,
         bottom,
+        ceiling,
+        floor,
         width = scale * aspect,
         height = scale / aspect;
 
@@ -37,16 +39,28 @@ export default function(area) {
       console.log("i0 " + i0);
       console.log("i1 " + i1);
 
-      // TODO compute top and bottom,
+      ceiling = Infinity;
+      floor = -Infinity;
+      for(j = i0; j < i1; j++) {
+        d = data[j];
+        top = y0(d);
+        bottom = y1(d);
+        if(top < ceiling) {
+          ceiling = top;
+        }
+        if(bottom > floor) {
+          floor = bottom;
+        }
+      }
+
+      console.log("top " + top);
+      console.log("ceiling " + ceiling);
+      console.log("bottom " + bottom);
+      console.log("floor " + floor);
+
+
       // TODO return true if (top-bottom) <= height
       //if(test(data, x0, x1, h
-      //top = y0(d);
-      //bottom = y1(d);
-      //j = i;
-      //while(x(d) < x1 && j < data.length) {
-      //  d = data[j]
-      //  j++;
-      //}
 
       return false;
     }
