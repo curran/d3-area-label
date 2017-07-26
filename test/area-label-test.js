@@ -1,7 +1,7 @@
 var tape = require("tape"),
-    areaLabel = require("../");
+    d3 = require("../");
 
 tape("areaLabel() returns the answer to the ultimate question of life, the universe, and everything.", function(test) {
-  test.equal(areaLabel.areaLabel(), 42);
+  test.equal(typeof d3.areaLabel, "function");
   test.end();
 });

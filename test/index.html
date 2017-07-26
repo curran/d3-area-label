@@ -66,22 +66,13 @@
           .attr('d', area)
           .attr('fill', d => colorScale(d.key))
           .attr('stroke', d => colorScale(d.key));
-
-      const position = area => function (d) {
-        console.log(this)
-        console.log(d)
-        d3.select(this)
-          .attr('x', 100 + Math.random() * 50)
-          .attr('y', 100 + Math.random() * 50)
-          .attr('font-size', Math.random() * 20 + 'px')
-      }
       
       const labels = svg.selectAll('text').data(stacked)
       labels
         .enter().append('text')
         .merge(labels)
           .text(d => d.key)
-          .each(position(area))
+          .each(d3.areaLabel(area))
     </script>
   </body>
 </html>
