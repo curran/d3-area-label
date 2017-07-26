@@ -75,6 +75,6 @@ export default function(area) {
       .attr("y", fit.y)
       .attr("text-anchor", "middle")
       .attr("alignment-baseline", "middle")
-      .attr("font-size", Math.round(scale * 0.2) + "px")
+      .attr("font-size", Math.round(scale * 0.3) + "px")
   }
 };
