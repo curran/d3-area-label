@@ -1,16 +1,20 @@
 // See https://en.wikipedia.org/wiki/Bisection_method#Algorithm
-function bisection(a, b, f, epsilon, maxIterations) {
-  var i, c, fc;
+function bisection(a, b, test, epsilon, maxIterations) {
+  var i, c, passesTest, withinEpsilon;
   for(i = 0; i < maxIterations; i++){
     c = (a + b) / 2;
-    fc = f(c)
-    if( fc && (b - a) / 2 < epsilon ) {
+    passesTest = test(c);
+    withinEpsilon = (b - a) / 2 < epsilon;
+
+    // In our case, the returned value *must* pass the test,
+    // so it's not enough only to check if the value is within epsilon.
+    if ( passesTest && withinEpsilon) {
       return c;
     }
-    if(fc) {
-      a = c
+    if (passesTest) {
+      a = c;
     } else {
-      b = c
+      b = c;
     }
   }
   return null;
@@ -83,22 +87,34 @@ export default function(area) {
     var maxHeight = 1000;
 
     // The tolerance within we wish to optimize the bounding box height.
-    var epsilon = 0.1;
+    var epsilon = 0.01;
 
     // The maximum number of iterations for the bisection method.
-    var maxIterations = 1000;
+    // Typical iterations for convervence on 0.001 epsilon are between 15 and 20.
+    var maxIterations = 100;
 
+
+    // The bounding box of the text label as-is.
     var bbox = this.getBBox();
+
+    // The aspect ratio of the text label bounding box.
     var aspect = bbox.width / bbox.height;
 
-    var f = testHeight => fits(data, aspect, testHeight, true);
-    var height = bisection(minHeight, maxHeight, f, epsilon, maxIterations);
+    // The test function for use in the bisection method.
+    var test = testHeight => fits(data, aspect, testHeight, true);
 
+    // Use the bisection method to find the largest height label that fits.
+    var height = bisection(minHeight, maxHeight, test, epsilon, maxIterations);
+
+    // Get the X and Y coordinates for the largest height label that fits.
     var fit = fits(data, aspect, height);
+    var x = fit.x;
+    var y = fit.y;
 
+    // Translate and scale the label to the computed position and size.
     d3.select(this)
         .attr("transform", [
-          "translate(" + fit.x + "," + fit.y + ")",
+          "translate(" + x + "," + y + ")",
           "scale(" + height / bbox.height + ")",
           "translate(" + -bbox.x + "," + -bbox.y + ")"
         ].join(" "));
