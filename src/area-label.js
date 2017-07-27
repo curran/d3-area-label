@@ -1,8 +1,3 @@
-function getAspectRatio(textNode) {
-  var box = textNode.getBBox();
-  return box.width / box.height;
-}
-
 export default function(area) {
   var x = area.x();
   var y0 = area.y0();
@@ -45,8 +40,8 @@ export default function(area) {
       }
       if ((floor - ceiling) >= height) {
         return {
-          x: (x0 + x1) / 2,
-          y: (floor + ceiling) / 2
+          x: x0,
+          y: ceiling
         };
       }
     }
@@ -54,17 +49,34 @@ export default function(area) {
   }
 
   return function (data) {
-    var aspect = getAspectRatio(this);
+  
+    // TODO make all this stuff configurable
+    var fontUnit = "px";
+    var measuredFontSize = 12;
+    var minHeight = 2;
+
+    var textNode = this;
+    var text = d3.select(textNode)
+        .attr("font-size", measuredFontSize + fontUnit);
+    var measuredBox = textNode.getBBox();
+    var measuredHeight = measuredBox.height;
+    var measuredWidth = measuredBox.width;
+    var aspect = measuredWidth / measuredHeight;
+    var fontToHeightRatio = measuredFontSize / measuredHeight;
+
+    var minScale = aspect * minHeight;
 
     // Find largest integer scale where label would fit.
     // TODO use Bisector method to speed up this part.
-    var scale = 5;
+    var scale = minScale;
     while (fits(data, aspect, scale)) {
       scale++;
     }
     scale--;
     var fit = fits(data, aspect, scale);
 
+    var height = scale / aspect;
+    var fontSize = fontToHeightRatio * height;
 
     //var d = data[0];
     //console.log(x(d), y0(d), y1(d));
@@ -73,8 +85,8 @@ export default function(area) {
     d3.select(this)
       .attr("x", fit.x)
       .attr("y", fit.y)
-      .attr("text-anchor", "middle")
-      .attr("alignment-baseline", "middle")
-      .attr("font-size", Math.round(scale * 0.3) + "px")
+      .attr("text-anchor", "start")
+      .attr("alignment-baseline", "hanging")
+      .attr("font-size", fontSize + fontUnit)
   }
 };
