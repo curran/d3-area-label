@@ -52,19 +52,11 @@ export default function(area) {
 
   return function (data) {
   
-    // TODO make all this stuff configurable
-    var fontUnit = "px";
-    var measuredFontSize = 12;
+    // TODO make this configurable
     var minHeight = 2;
 
-    var textNode = this;
-    var text = d3.select(textNode)
-        .attr("font-size", measuredFontSize + fontUnit);
-    var measuredBox = textNode.getBBox();
-    var measuredHeight = measuredBox.height;
-    var measuredWidth = measuredBox.width;
-    var aspect = measuredWidth / measuredHeight;
-    var fontToHeightRatio = measuredFontSize / measuredHeight;
+    var bbox = this.getBBox();
+    var aspect = bbox.width / bbox.height;
 
     // Find largest integer scale where label would fit.
     // TODO use Bisector method to speed up this part.
@@ -74,17 +66,14 @@ export default function(area) {
     }
     height--;
     var fit = fits(data, aspect, height);
-    var fontSize = fontToHeightRatio * height;
 
-    //var d = data[0];
-    //console.log(x(d), y0(d), y1(d));
-
-    // This is how we could set the x, y, and font-size
+    var scale = height / bbox.height;
+    var translate = [ fit.x, fit.y ];
     d3.select(this)
-      .attr("x", fit.x)
-      .attr("y", fit.y)
-      .attr("text-anchor", "start")
-      .attr("alignment-baseline", "hanging")
-      .attr("font-size", fontSize + fontUnit)
+        .attr("transform", [
+          "translate(" + translate + ")",
+          "scale(" + scale + ")",
+          "translate(" + [-bbox.x, -bbox.y] + ")"
+        ].join(" "));
   }
 };
