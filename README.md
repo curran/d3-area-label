@@ -2,7 +2,8 @@
 
 A label placement library for area charts.
 
-![image](https://user-images.githubusercontent.com/68416/28669943-0e11fa72-72f4-11e7-9aef-0c575cb20825.png)
+[![image](https://user-images.githubusercontent.com/68416/28669943-0e11fa72-72f4-11e7-9aef-0c575cb20825.png)](https://bl.ocks.org/curran/2793201c7025c416c471e30d30546c6b)
+Example: https://bl.ocks.org/curran/2793201c7025c416c471e30d30546c6b
 
 ## Installing
 
