@@ -7,18 +7,17 @@ export default function(area) {
   // Returns true if there is at least one rectangle
   // of the given aspect ratio and scale
   // that fits somewhere within the area.
-  function fits(data, aspect, scale) {
+  function fits(data, aspect, height, justTest) {
     var x0, x1, i0, i1, j, d, top, bottom, ceiling, floor,
-        width = scale * aspect,
-        height = scale / aspect,
-        right = x(data[data.length - 1]);
+        width = aspect * height,
+        xMax = x(data[data.length - 1]);
 
     for(i0 = 0; i0 < data.length; i0++) {
       d = data[i0];
       x0 = x(d);
       x1 = x0 + width;
 
-      if (x1 > right) {
+      if (x1 > xMax) {
         break;
       }
       
@@ -39,6 +38,9 @@ export default function(area) {
         }
       }
       if ((floor - ceiling) >= height) {
+        if (justTest) {
+          return true;
+        }
         return {
           x: x0,
           y: ceiling
@@ -64,18 +66,14 @@ export default function(area) {
     var aspect = measuredWidth / measuredHeight;
     var fontToHeightRatio = measuredFontSize / measuredHeight;
 
-    var minScale = aspect * minHeight;
-
     // Find largest integer scale where label would fit.
     // TODO use Bisector method to speed up this part.
-    var scale = minScale;
-    while (fits(data, aspect, scale)) {
-      scale++;
+    var height = minHeight;
+    while (fits(data, aspect, height, true)) {
+      height++;
     }
-    scale--;
-    var fit = fits(data, aspect, scale);
-
-    var height = scale / aspect;
+    height--;
+    var fit = fits(data, aspect, height);
     var fontSize = fontToHeightRatio * height;
 
     //var d = data[0];
