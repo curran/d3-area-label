@@ -1,3 +1,21 @@
+// See https://en.wikipedia.org/wiki/Bisection_method#Algorithm
+function bisection(a, b, f, epsilon, maxIterations) {
+  var i, c, fc;
+  for(i = 0; i < maxIterations; i++){
+    c = (a + b) / 2;
+    fc = f(c)
+    if( fc && (b - a) / 2 < epsilon ) {
+      return c;
+    }
+    if(fc) {
+      a = c
+    } else {
+      b = c
+    }
+  }
+  return null;
+}
+
 export default function(area) {
   var x = area.x();
   var y0 = area.y0();
@@ -56,20 +74,26 @@ export default function(area) {
 
   return function (data) {
   
-    // TODO make this configurable
+    // TODO make these configurable
+
+    // The minimum label bounding box height in pixels.
     var minHeight = 2;
+
+    // The maximum label bounding box height in pixels.
+    var maxHeight = 1000;
+
+    // The tolerance within we wish to optimize the bounding box height.
+    var epsilon = 0.1;
+
+    // The maximum number of iterations for the bisection method.
+    var maxIterations = 1000;
 
     var bbox = this.getBBox();
     var aspect = bbox.width / bbox.height;
 
-    // Find largest height where label would fit.
-    // TODO use Bisection method to get more precision with fewer iterations.
-    // https://en.wikipedia.org/wiki/Bisection_method
-    var height = minHeight;
-    while (fits(data, aspect, height, true)) {
-      height++;
-    }
-    height--;
+    var f = testHeight => fits(data, aspect, testHeight, true);
+    var height = bisection(minHeight, maxHeight, f, epsilon, maxIterations);
+
     var fit = fits(data, aspect, height);
 
     d3.select(this)
