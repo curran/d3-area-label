@@ -1,6 +1,8 @@
 # d3-area-label
 
-(work in progress) A label placement library for area charts.
+A label placement library for area charts.
+
+![image](https://user-images.githubusercontent.com/68416/28669943-0e11fa72-72f4-11e7-9aef-0c575cb20825.png)
 
 ## Installing
 
@@ -8,8 +10,34 @@ If you use NPM, `npm install d3-area-label`. Otherwise, download the [latest rel
 
 ## API Reference
 
-YOUR API DOCUMENTATION HERE. Use bold for symbols (such as constructor and method names) and italics for instances. See the other D3 modules for examples.
+<a href="#area-label" name="area-label">#</a> <b>areaLabel</b>(<i>area</i>)
 
-<a href="#area-label" name="area-label">#</a> <b>areaLabel</b>()
+Computes the optimal position and size for a label. Also positions the label using SVG transform.
 
-Computes the answer to the ultimate question of life, the universe, and everything.
+Example usage (from [test/index.html](test/index.html)):
+
+```js
+const area = d3.area()
+  .x(d => xScale(xValue(d.data)))
+  .y0(d => yScale(d[0]))
+  .y1(d => yScale(d[1]))
+  
+const paths = svg.selectAll('path').data(stacked)
+paths
+  .enter().append('path')
+    .attr('fill-opacity', areaFillOpacity)
+  .merge(paths)
+    .attr('d', area)
+
+const labels = svg.selectAll('text').data(stacked)
+labels
+  .enter().append('text')
+    .attr('class', 'area-label')
+  .merge(labels)
+    .text(d => d.key)
+    .each(d3.areaLabel(area))
+```
+
+# Thanks
+
+Many thanks to Lee Byron, Noah Veltman, Philippe Rivière, and Adam Pearce for ideas and input.
