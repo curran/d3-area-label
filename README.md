@@ -14,21 +14,9 @@ If you use NPM, `npm install d3-area-label`. Otherwise, download the [latest rel
 
 Computes the optimal position and size for a label. Also positions the label using SVG transform.
 
-Example usage (from [test/index.html](test/index.html)):
+Example usage:
 
 ```js
-const area = d3.area()
-  .x(d => xScale(xValue(d.data)))
-  .y0(d => yScale(d[0]))
-  .y1(d => yScale(d[1]))
-  
-const paths = svg.selectAll('path').data(stacked)
-paths
-  .enter().append('path')
-    .attr('fill-opacity', areaFillOpacity)
-  .merge(paths)
-    .attr('d', area)
-
 const labels = svg.selectAll('text').data(stacked)
 labels
   .enter().append('text')
@@ -37,6 +25,8 @@ labels
     .text(d => d.key)
     .each(d3.areaLabel(area)) // <--------------------- Call the function like this.
 ```
+
+For more details and context, see [test/index.html](test/index.html).
 
 # Thanks
 
