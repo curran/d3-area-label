@@ -35,7 +35,7 @@ labels
     .attr('class', 'area-label')
   .merge(labels)
     .text(d => d.key)
-    .each(d3.areaLabel(area))
+    .each(d3.areaLabel(area)) // <--------------------- Call the function like this.
 ```
 
 # Thanks
