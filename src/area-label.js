@@ -101,7 +101,9 @@ export default function(area) {
     var aspect = bbox.width / bbox.height;
 
     // The test function for use in the bisection method.
-    var test = testHeight => fits(data, aspect, testHeight, true);
+    var test = function (testHeight){
+      return fits(data, aspect, testHeight, true);
+    };
 
     // Use the bisection method to find the largest height label that fits.
     var height = bisection(minHeight, maxHeight, test, epsilon, maxIterations);
