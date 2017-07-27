@@ -38,9 +38,13 @@ export default function(area) {
         }
       }
       if ((floor - ceiling) >= height) {
+
+        // Avoid creating new objects unnecessarily while just testing.
         if (justTest) {
           return true;
         }
+
+        // Output the coordinates for use in label transform.
         return {
           x: x0,
           y: ceiling
@@ -58,8 +62,9 @@ export default function(area) {
     var bbox = this.getBBox();
     var aspect = bbox.width / bbox.height;
 
-    // Find largest integer scale where label would fit.
-    // TODO use Bisector method to speed up this part.
+    // Find largest height where label would fit.
+    // TODO use Bisection method to get more precision with fewer iterations.
+    // https://en.wikipedia.org/wiki/Bisection_method
     var height = minHeight;
     while (fits(data, aspect, height, true)) {
       height++;
@@ -67,13 +72,11 @@ export default function(area) {
     height--;
     var fit = fits(data, aspect, height);
 
-    var scale = height / bbox.height;
-    var translate = [ fit.x, fit.y ];
     d3.select(this)
         .attr("transform", [
-          "translate(" + translate + ")",
-          "scale(" + scale + ")",
-          "translate(" + [-bbox.x, -bbox.y] + ")"
+          "translate(" + fit.x + "," + fit.y + ")",
+          "scale(" + height / bbox.height + ")",
+          "translate(" + -bbox.x + "," + -bbox.y + ")"
         ].join(" "));
   }
 };
