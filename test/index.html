@@ -6,6 +6,12 @@
     <script src="//d3js.org/d3.v4.min.js"></script>
     <script src="../build/d3-area-label.js"></script>
     <title>Area Label Test</title>
+    <style>
+      .area-label {
+        font-family: sans-serif;
+        fill-opacity: 0.5;
+      }
+    </style>
   </head>
   <body>
     <svg width="960" height="500"></svg>
@@ -65,14 +71,16 @@
         .merge(paths)
           .attr('d', area)
           .attr('fill', d => colorScale(d.key))
-          .attr('stroke', d => colorScale(d.key));
+          .attr('stroke', d => colorScale(d.key))
       
       const labels = svg.selectAll('text').data(stacked)
       labels
         .enter().append('text')
+          .attr('class', 'area-label')
         .merge(labels)
           .text(d => d.key)
           .each(d3.areaLabel(area))
+
     </script>
   </body>
 </html>
