@@ -38,7 +38,9 @@ function areaLabel(area) {
 
       // The maximum number of iterations for the bisection method.
       // Typical iterations for convervence on 0.001 epsilon are between 15 and 20.
-      maxIterations = 100;
+      maxIterations = 100,
+
+      padding = { left: 0, right: 0, top: 0, bottom: 0 };
 
 
   // Returns true if there is at least one rectangle
@@ -94,7 +96,8 @@ function areaLabel(area) {
         // Output the coordinates for use in label transform.
         return {
           x: x0,
-          y: ceiling
+          y: ceiling,
+          width: width
         };
       }
     }
@@ -106,8 +109,12 @@ function areaLabel(area) {
     // The bounding box of the text label as-is.
     var bbox = this.getBBox();
 
+    // Account for padding.
+    var bboxWidth = bbox.width * (1 + padding.left + padding.right);
+    var bboxHeight = bbox.height * (1 + padding.top + padding.bottom);
+
     // The aspect ratio of the text label bounding box.
-    var aspect = bbox.width / bbox.height;
+    var aspect = bboxWidth / bboxHeight;
 
     // The test function for use in the bisection method.
     var test = function (testHeight){
@@ -116,14 +123,19 @@ function areaLabel(area) {
 
     // Use the bisection method to find the largest height label that fits.
     var height = bisection(minHeight, maxHeight, test, epsilon, maxIterations);
+    var width = aspect * height;
 
     // Get the X and Y coordinates for the largest height label that fits.
     var fit = fits(data, aspect, height);
 
+    // Account for padding.
+    var fitX = fit.x + width * padding.left;
+    var fitY = fit.y + height * padding.top;
+
     // Translate and scale the label to the computed position and size.
     return [
-      "translate(" + fit.x + "," + fit.y + ")",
-      "scale(" + height / bbox.height + ")",
+      "translate(" + fitX + "," + fitY + ")",
+      "scale(" + height / bboxHeight + ")",
       "translate(" + -bbox.x + "," + -bbox.y + ")"
     ].join(" ");
   }
