@@ -26,13 +26,17 @@ If you use NPM, `npm install d3-area-label`. Otherwise, download the [latest rel
 
 <a href="#area-label" name="area-label">#</a> d3.<b>areaLabel</b>([<i>area</i>])
 
-Constructs a new label position generator. If *area* is specified, sets [area](#area) as well (equivalent to `d3.areaLabel().area(area)`).
+Constructs a new label position generator.
+
+If *area* is specified, invokes <a href="#area"><i>areaLabel</i>.<b>area</b></a> as well (equivalent to `d3.areaLabel().area(area)`).
 
 <a name="_areaLabel" href="#_areaLabel">#</a> <i>areaLabel</i>(<i>data</i>)
 
-Invoke the label position generator with the given *data* array. This function computes the optimal position and size for a label and returns an SVG transform string.
+Invoke the label position generator with the given *data* array.
 
-<a name="area" href="#area">#</a> <i>areaLabel</i>.<b>area</b>([<i>area</i>])
+This function computes the optimal position and size for a label and returns an SVG transform string.
+
+<a name="area" href="#area">#</a> <i>areaLabel</i>.<b>area</b>(<i>area</i>)
 
 Sets the x, y0, and y1 accessors applied to the data array from the given *area*, an instance of [d3.area](https://github.com/d3/d3-shape#area).
 
