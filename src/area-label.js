@@ -64,7 +64,6 @@ function areaLabel(area) {
       // Test until we reach the rightmost X position
       // within the X positions of the data points.
       i1 = bisectorX(data, x1);
-
       ceiling = -Infinity;
       floor = Infinity;
       for(j = i0; j < i1; j++) {
@@ -132,15 +131,25 @@ function areaLabel(area) {
         ].join(" "));
   }
 
+  my.x = function(_) {
+    if (arguments.length) {
+      x = _;
+      bisectorX = d3.bisector(x).right;
+      return my;
+    }
+    return x;
+  };
+
+  my.y0 = function(_) {
+    return arguments.length ? (y0 = _, my) : y0;
+  };
+
+  my.y1 = function(_) {
+    return arguments.length ? (y1 = _, my) : y1;
+  };
+
   my.area = function(area) {
-    // TODO make each individually configurable.
-    // my.x = function(_) {
-    //   return arguments.length ? (x = +_, my) : x;
-    // };
-    x = area.x();
-    y0 = area.y0();
-    y1 = area.y1();
-    bisectorX = d3.bisector(x).right;
+    my.x(area.x()).y0(area.y0()).y1(area.y1());
   };
 
   my.minHeight = function(_) {
