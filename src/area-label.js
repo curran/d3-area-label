@@ -107,16 +107,16 @@ function areaLabel(area) {
   function my(data) {
 
     // The bounding box of the text label as-is.
-    var bbox = this.getBBox();
+    var box = this.getBBox();
 
     // Account for padding.
     var paddingX = 1 + padding.left + padding.right;
     var paddingY = 1 + padding.top + padding.bottom;
-    var bboxWidth = bbox.width * paddingX;
-    var bboxHeight = bbox.height * paddingY;
+    var boxWidth = box.width * paddingX;
+    var boxHeight = box.height * paddingY;
 
     // The aspect ratio of the text label bounding box.
-    var aspect = bboxWidth / bboxHeight;
+    var aspect = boxWidth / boxHeight;
 
     // The test function for use in the bisection method.
     var test = function (testHeight){
@@ -137,8 +137,8 @@ function areaLabel(area) {
     // Translate and scale the label to the computed position and size.
     return [
       "translate(" + fitX + "," + fitY + ")",
-      "scale(" + height / bboxHeight + ")",
-      "translate(" + -bbox.x + "," + -bbox.y + ")"
+      "scale(" + height / boxHeight + ")",
+      "translate(" + -box.x + "," + -box.y + ")"
     ].join(" ");
   }
 
