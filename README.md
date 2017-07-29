@@ -38,7 +38,19 @@ This function computes the optimal position and size for a label and returns an 
 
 <a name="area" href="#area">#</a> <i>areaLabel</i>.<b>area</b>(<i>area</i>)
 
-Sets the x, y0, and y1 accessors applied to the data array from the given *area*, an instance of [d3.area](https://github.com/d3/d3-shape#area).
+Sets the *[x](#x)*, *[y0](#y0)*, and *[y1](#y1)* accessors applied to the data array from the given *area*, an instance of [d3.area](https://github.com/d3/d3-shape#area).
+
+<a name="x" href="#x">#</a> <i>xLabel</i>.<b>x</b>(<i>x</i>)
+
+If *x* is specified, sets the x accessor applied to the data array and returns the label position generator. If *x* is not specified, returns the current x.
+
+<a name="y0" href="#y0">#</a> <i>y0Label</i>.<b>y0</b>(<i>y0</i>)
+
+If *y0* is specified, sets the y0 accessor applied to the data array and returns the label position generator. If *y0* is not specified, returns the current y0.
+
+<a name="y1" href="#y1">#</a> <i>y1Label</i>.<b>y1</b>(<i>y1</i>)
+
+If *y1* is specified, sets the y1 accessor applied to the data array and returns the label position generator. If *y1* is not specified, returns the current y1.
 
 # Thanks
 
