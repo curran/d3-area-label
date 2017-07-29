@@ -110,8 +110,10 @@ function areaLabel(area) {
     var bbox = this.getBBox();
 
     // Account for padding.
-    var bboxWidth = bbox.width * (1 + padding.left + padding.right);
-    var bboxHeight = bbox.height * (1 + padding.top + padding.bottom);
+    var paddingX = 1 + padding.left + padding.right;
+    var paddingY = 1 + padding.top + padding.bottom;
+    var bboxWidth = bbox.width * paddingX;
+    var bboxHeight = bbox.height * paddingY;
 
     // The aspect ratio of the text label bounding box.
     var aspect = bboxWidth / bboxHeight;
@@ -129,8 +131,8 @@ function areaLabel(area) {
     var fit = fits(data, aspect, height);
 
     // Account for padding.
-    var fitX = fit.x + width * padding.left;
-    var fitY = fit.y + height * padding.top;
+    var fitX = fit.x + width / paddingX * padding.left;
+    var fitY = fit.y + height / paddingY * padding.top;
 
     // Translate and scale the label to the computed position and size.
     return [
