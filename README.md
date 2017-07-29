@@ -52,6 +52,46 @@ If *y0* is specified, sets the y0 accessor applied to the data array and returns
 
 If *y1* is specified, sets the y1 accessor applied to the data array and returns the label position generator. If *y1* is not specified, returns the current y1.
 
+<a name="minHeight" href="#minHeight">#</a> <i>areaLabel</i>.<b>minHeight</b>(<i>minHeight</i>)
+
+The minimum label bounding box height in pixels. Default is 2.
+
+<a name="epsilon" href="#epsilon">#</a> <i>areaLabel</i>.<b>epsilon</b>(<i>epsilon</i>)
+
+The tolerance within we wish to optimize the bounding box height (in pixels). Default is 0.01;
+
+<a name="maxIterations" href="#maxIterations">#</a> <i>areaLabel</i>.<b>maxIterations</b>(<i>maxIterations</i>)
+
+The maximum number of iterations for the [bisection method algorithm](https://en.wikipedia.org/wiki/Bisection_method#Algorithm), which is used to find the maximum height rectangle that fits within the area.
+
+<a name="paddingLeft" href="#paddingLeft">#</a> <i>areaLabel</i>.<b>paddingLeft</b>(<i>paddingLeft</i>)
+
+The left padding for labels. This should be a value between 0 and 1. Default is 0.
+
+<a name="paddingRight" href="#paddingRight">#</a> <i>areaLabel</i>.<b>paddingRight</b>(<i>paddingRight</i>)
+
+The right padding for labels. This should be a value between 0 and 1. Default is 0.
+
+<a name="paddingTop" href="#paddingTop">#</a> <i>areaLabel</i>.<b>paddingTop</b>(<i>paddingTop</i>)
+
+The top padding for labels. This should be a value between 0 and 1. Default is 0.
+
+<a name="paddingBottom" href="#paddingBottom">#</a> <i>areaLabel</i>.<b>paddingBottom</b>(<i>paddingBottom</i>)
+
+The bottom padding for labels. This should be a value between 0 and 1. Default is 0.
+
+<a name="paddingX" href="#paddingX">#</a> <i>areaLabel</i>.<b>paddingX</b>(<i>paddingX</i>)
+
+A convenience method for simultaneously setting *[paddingLeft](#paddingLeft)* and *[paddingRight](#paddingRight)*.
+
+<a name="paddingY" href="#paddingY">#</a> <i>areaLabel</i>.<b>paddingY</b>(<i>paddingY</i>)
+
+A convenience method for simultaneously setting *[paddingTop](#paddingTop)* and *[paddingBottom](#paddingBottom)*.
+
+<a name="padding" href="#padding">#</a> <i>areaLabel</i>.<b>padding</b>(<i>padding</i>)
+
+A convenience method for simultaneously setting *[paddingX](#paddingX)* and *[paddingY](#paddingY)*.
+
 # Thanks
 
 Many thanks to Lee Byron, Noah Veltman, Philippe Rivière, and Adam Pearce for ideas and input.

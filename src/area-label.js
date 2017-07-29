@@ -26,18 +26,9 @@ function areaLabel(area) {
       y0,
       y1,
       bisectorX,
-
-      // TODO move these words into README and out of code.
-      // The minimum label bounding box height in pixels.
       minHeight = 2,
-
-      // The tolerance within we wish to optimize the bounding box height.
       epsilon = 0.01,
-
-      // The maximum number of iterations for the bisection method.
-      // Typical iterations for convervence on 0.001 epsilon are between 15 and 20.
       maxIterations = 100,
-
       paddingLeft = 0,
       paddingRight = 0,
       paddingTop = 0,
