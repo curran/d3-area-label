@@ -1,3 +1,4 @@
+// Finds the largest value that passes the test within some epsilon tolerance.
 // See https://en.wikipedia.org/wiki/Bisection_method#Algorithm
 function bisection(a, b, test, epsilon, maxIterations) {
   var i, c, passesTest, withinEpsilon;
@@ -40,7 +41,12 @@ function areaLabel(area) {
       // Typical iterations for convervence on 0.001 epsilon are between 15 and 20.
       maxIterations = 100,
 
-      padding = { left: 0, right: 0, top: 0, bottom: 0 };
+      padding = {
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0
+      };
 
 
   // Returns true if there is at least one rectangle
@@ -110,10 +116,10 @@ function areaLabel(area) {
     var box = this.getBBox();
 
     // Account for padding.
-    var paddingX = 1 + padding.left + padding.right;
-    var paddingY = 1 + padding.top + padding.bottom;
-    var boxWidth = box.width * paddingX;
-    var boxHeight = box.height * paddingY;
+    var paddingFactorX = 1 + padding.left + padding.right;
+    var paddingFactorY = 1 + padding.top + padding.bottom;
+    var boxWidth = box.width * paddingFactorX;
+    var boxHeight = box.height * paddingFactorY;
 
     // The aspect ratio of the text label bounding box.
     var aspect = boxWidth / boxHeight;
@@ -131,8 +137,8 @@ function areaLabel(area) {
     var fit = fits(data, aspect, height);
 
     // Account for padding.
-    var fitX = fit.x + width / paddingX * padding.left;
-    var fitY = fit.y + height / paddingY * padding.top;
+    var fitX = fit.x + width / paddingFactorX * padding.left;
+    var fitY = fit.y + height / paddingFactorY * padding.top;
 
     // Translate and scale the label to the computed position and size.
     return [
