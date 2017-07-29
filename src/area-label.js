@@ -1,10 +1,6 @@
-// This is the thing returned by areaLabel().
-function Fit() {
-}
-
 // Returns a transform string that will
 // translate and scale the label to the computed position and size.
-Fit.prototype.toString = function (){
+const toTransformString = function (){
   return [
     "translate(" + this.xTranslate + "," + this.yTranslate + ")",
     "scale(" + this.scale + ")"
@@ -106,12 +102,12 @@ function areaLabel(area) {
         }
 
         // Output the solution for use in label transform.
-        var fit = new Fit();
-        fit.x = x0;
-        fit.y = ceiling;
-        fit.width = width;
-        fit.height = height;
-        return fit;
+        return {
+          x: x0,
+          y: ceiling,
+          width: width,
+          height: height
+        };
       }
     }
     return false;
@@ -146,12 +142,14 @@ function areaLabel(area) {
     // return an object that will scale the label down to nothing,
     // and indicate that the algorithm failed.
     if (height === null) {
-      var fit = new Fit();
-      fit.failed = true;
-      fit.scale = 0;
-      fit.xTranslate = 0;
-      fit.yTranslate = 0;
-      return fit;
+      return {
+        failed: true,
+        numIterations: maxIterations,
+        scale: 0,
+        xTranslate: 0,
+        yTranslate: 0,
+        toString: toTransformString
+      };
     }
 
     // Get the (x, y, width, height) for the largest height label that fits.
@@ -165,6 +163,9 @@ function areaLabel(area) {
     fit.scale = height / boxHeight;
     fit.xTranslate = xInner - fit.scale * box.x;
     fit.yTranslate = yInner - fit.scale * box.y;
+
+    // Expose the toString method, which generates a transform string.
+    fit.toString = toTransformString;
 
     // Expose how many iterations the bisection method took.
     fit.numIterations = numIterations;
