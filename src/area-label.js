@@ -34,16 +34,22 @@ export default function(area) {
         width = aspect * height,
         xMax = x(data[data.length - 1]);
 
+    // Check if we can fit the rectangle at an X position
+    // corresponding with one of the X values from the data.
     for(i0 = 0; i0 < data.length; i0++) {
       d = data[i0];
       x0 = x(d);
       x1 = x0 + width;
 
+      // Don't go off the right edge of the area.
       if (x1 > xMax) {
         break;
       }
       
+      // Test until we reach the rightmost X position
+      // within the X positions of the data points.
       i1 = bisectorX(data, x1);
+
       ceiling = -Infinity;
       floor = Infinity;
       for(j = i0; j < i1; j++) {
@@ -57,6 +63,11 @@ export default function(area) {
         top = y1(d);
         if(top > ceiling) {
           ceiling = top;
+        }
+
+        // Break as soon as we know the rectangle wil not fit.
+        if ((floor - ceiling) < height) {
+          break;
         }
       }
       if ((floor - ceiling) >= height) {
