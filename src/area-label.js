@@ -139,6 +139,18 @@ function areaLabel(area) {
     // Use the bisection method to find the largest height label that fits.
     var height = bisection(minHeight, maxHeight, test, epsilon, maxIterations);
 
+    // If there's not any position that works,
+    // return an object that will scale the label down to nothing,
+    // and indicate that the algorithm failed.
+    if (height === null) {
+      var fit = new Fit();
+      fit.failed = true;
+      fit.scale = 0;
+      fit.xTranslate = 0;
+      fit.yTranslate = 0;
+      return fit;
+    }
+
     // Get the (x, y, width, height) for the largest height label that fits.
     var fit = fits(data, aspect, height);
 
