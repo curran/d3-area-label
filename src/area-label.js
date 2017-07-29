@@ -20,11 +20,26 @@ function bisection(a, b, test, epsilon, maxIterations) {
   return null;
 }
 
-export default function(area) {
-  var x = area.x();
-  var y0 = area.y0();
-  var y1 = area.y1();
-  var bisectorX = d3.bisector(x).right;
+function areaLabel(area) {
+  var x,
+      y0,
+      y1,
+      bisectorX,
+
+      // TODO move these words into README and out of code.
+      // The minimum label bounding box height in pixels.
+      minHeight = 2,
+
+      // The maximum label bounding box height in pixels.
+      maxHeight = 1000,
+
+      // The tolerance within we wish to optimize the bounding box height.
+      epsilon = 0.01,
+
+      // The maximum number of iterations for the bisection method.
+      // Typical iterations for convervence on 0.001 epsilon are between 15 and 20.
+      maxIterations = 100;
+
 
   // Returns true if there is at least one rectangle
   // of the given aspect ratio and scale
@@ -49,7 +64,6 @@ export default function(area) {
       // Test until we reach the rightmost X position
       // within the X positions of the data points.
       i1 = bisectorX(data, x1);
-
       ceiling = -Infinity;
       floor = Infinity;
       for(j = i0; j < i1; j++) {
@@ -87,23 +101,7 @@ export default function(area) {
     return false;
   }
 
-  return function (data) {
-  
-    // TODO make these configurable
-
-    // The minimum label bounding box height in pixels.
-    var minHeight = 2;
-
-    // The maximum label bounding box height in pixels.
-    var maxHeight = 1000;
-
-    // The tolerance within we wish to optimize the bounding box height.
-    var epsilon = 0.01;
-
-    // The maximum number of iterations for the bisection method.
-    // Typical iterations for convervence on 0.001 epsilon are between 15 and 20.
-    var maxIterations = 100;
-
+  function my(data) {
 
     // The bounding box of the text label as-is.
     var bbox = this.getBBox();
@@ -132,4 +130,50 @@ export default function(area) {
           "translate(" + -bbox.x + "," + -bbox.y + ")"
         ].join(" "));
   }
+
+  my.x = function(_) {
+    if (arguments.length) {
+      x = _;
+      bisectorX = d3.bisector(x).right;
+      return my;
+    }
+    return x;
+  };
+
+  my.y0 = function(_) {
+    return arguments.length ? (y0 = _, my) : y0;
+  };
+
+  my.y1 = function(_) {
+    return arguments.length ? (y1 = _, my) : y1;
+  };
+
+  my.area = function(area) {
+    my.x(area.x()).y0(area.y0()).y1(area.y1());
+  };
+
+  my.minHeight = function(_) {
+    return arguments.length ? (minHeight = +_, my) : minHeight;
+  };
+
+  // TODO compute this from the area, no need to have this constant.
+  my.maxHeight = function(_) {
+    return arguments.length ? (maxHeight = +_, my) : maxHeight;
+  };
+
+  my.epsilon = function(_) {
+    return arguments.length ? (epsilon = +_, my) : epsilon;
+  };
+
+  my.maxIterations = function(_) {
+    return arguments.length ? (maxIterations = +_, my) : maxIterations;
+  };
+
+  if (area) {
+    my.area(area);
+  }
+
+  return my;
 };
+
+export default areaLabel;
