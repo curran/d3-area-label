@@ -21,7 +21,25 @@ function bisection(a, b, test, epsilon, maxIterations) {
 }
 
 function areaLabel(area) {
-  var x, y0, y1, bisectorX;
+  var x,
+      y0,
+      y1,
+      bisectorX,
+
+      // TODO move these words into README and out of code.
+      // The minimum label bounding box height in pixels.
+      minHeight = 2,
+
+      // The maximum label bounding box height in pixels.
+      maxHeight = 1000,
+
+      // The tolerance within we wish to optimize the bounding box height.
+      epsilon = 0.01,
+
+      // The maximum number of iterations for the bisection method.
+      // Typical iterations for convervence on 0.001 epsilon are between 15 and 20.
+      maxIterations = 100;
+
 
   // Returns true if there is at least one rectangle
   // of the given aspect ratio and scale
@@ -85,22 +103,6 @@ function areaLabel(area) {
   }
 
   function my(data) {
-  
-    // TODO make these configurable
-
-    // The minimum label bounding box height in pixels.
-    var minHeight = 2;
-
-    // The maximum label bounding box height in pixels.
-    var maxHeight = 1000;
-
-    // The tolerance within we wish to optimize the bounding box height.
-    var epsilon = 0.01;
-
-    // The maximum number of iterations for the bisection method.
-    // Typical iterations for convervence on 0.001 epsilon are between 15 and 20.
-    var maxIterations = 100;
-
 
     // The bounding box of the text label as-is.
     var bbox = this.getBBox();
@@ -139,6 +141,23 @@ function areaLabel(area) {
     y0 = area.y0();
     y1 = area.y1();
     bisectorX = d3.bisector(x).right;
+  };
+
+  my.minHeight = function(_) {
+    return arguments.length ? (minHeight = +_, my) : minHeight;
+  };
+
+  // TODO compute this from the area, no need to have this constant.
+  my.maxHeight = function(_) {
+    return arguments.length ? (maxHeight = +_, my) : maxHeight;
+  };
+
+  my.epsilon = function(_) {
+    return arguments.length ? (epsilon = +_, my) : epsilon;
+  };
+
+  my.maxIterations = function(_) {
+    return arguments.length ? (maxIterations = +_, my) : maxIterations;
   };
 
   if (area) {
