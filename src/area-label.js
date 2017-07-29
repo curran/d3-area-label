@@ -11,29 +11,6 @@ Fit.prototype.toString = function (){
   ].join(" ");
 };
 
-// Finds the largest value that passes the test within some epsilon tolerance.
-// See https://en.wikipedia.org/wiki/Bisection_method#Algorithm
-function bisection(a, b, test, epsilon, maxIterations) {
-  var i, c, passesTest, withinEpsilon;
-  for(i = 0; i < maxIterations; i++){
-    c = (a + b) / 2;
-    passesTest = test(c);
-    withinEpsilon = (b - a) / 2 < epsilon;
-
-    // In our case, the returned value *must* pass the test,
-    // so it's not enough only to check if the value is within epsilon.
-    if ( passesTest && withinEpsilon) {
-      return c;
-    }
-    if (passesTest) {
-      a = c;
-    } else {
-      b = c;
-    }
-  }
-  return null;
-}
-
 function areaLabel(area) {
   var x,
       y0,
@@ -45,12 +22,38 @@ function areaLabel(area) {
       paddingLeft = 0,
       paddingRight = 0,
       paddingTop = 0,
-      paddingBottom = 0;
+      paddingBottom = 0,
+      numIterations;
 
   // Gets the height of the area for a particular datum.
   function getHeight(d) {
     return y0(d) - y1(d);
   }
+
+  // Finds the largest value that passes the test within some epsilon tolerance.
+  // See https://en.wikipedia.org/wiki/Bisection_method#Algorithm
+  function bisection(a, b, test, epsilon, maxIterations) {
+    var i, c, passesTest, withinEpsilon;
+    for(i = 0; i < maxIterations; i++){
+      c = (a + b) / 2;
+      passesTest = test(c);
+      withinEpsilon = (b - a) / 2 < epsilon;
+
+      // In our case, the returned value *must* pass the test,
+      // so it's not enough only to check if the value is within epsilon.
+      if ( passesTest && withinEpsilon) {
+        numIterations = i;
+        return c;
+      }
+      if (passesTest) {
+        a = c;
+      } else {
+        b = c;
+      }
+    }
+    return null;
+  }
+
 
   // Returns true if there is at least one rectangle
   // of the given aspect ratio and scale
@@ -162,6 +165,9 @@ function areaLabel(area) {
     fit.scale = height / boxHeight;
     fit.xTranslate = xInner - fit.scale * box.x;
     fit.yTranslate = yInner - fit.scale * box.y;
+
+    // Expose how many iterations the bisection method took.
+    fit.numIterations = numIterations;
 
     return fit;
   }
