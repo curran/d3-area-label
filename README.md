@@ -2,7 +2,9 @@
 
 A library for placing labels in areas.
 
-[![image](https://user-images.githubusercontent.com/68416/28669943-0e11fa72-72f4-11e7-9aef-0c575cb20825.png)](https://bl.ocks.org/curran/2793201c7025c416c471e30d30546c6b)
+[![image](https://user-images.githubusercontent.com/68416/28745722-a5d9e7a4-749b-11e7-92a8-227a56cd3ead.png)](https://bl.ocks.org/curran/2793201c7025c416c471e30d30546c6b)
+
+You can use this to position labels on a StreamGraph or Stacked Area Chart.
 
 Example usage:
 
