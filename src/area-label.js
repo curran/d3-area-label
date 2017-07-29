@@ -20,11 +20,8 @@ function bisection(a, b, test, epsilon, maxIterations) {
   return null;
 }
 
-export default function(area) {
-  var x = area.x();
-  var y0 = area.y0();
-  var y1 = area.y1();
-  var bisectorX = d3.bisector(x).right;
+function areaLabel(area) {
+  var x, y0, y1, bisectorX;
 
   // Returns true if there is at least one rectangle
   // of the given aspect ratio and scale
@@ -87,7 +84,7 @@ export default function(area) {
     return false;
   }
 
-  return function (data) {
+  function my(data) {
   
     // TODO make these configurable
 
@@ -132,4 +129,23 @@ export default function(area) {
           "translate(" + -bbox.x + "," + -bbox.y + ")"
         ].join(" "));
   }
+
+  my.area = function(area) {
+    // TODO make each individually configurable.
+    // my.x = function(_) {
+    //   return arguments.length ? (x = +_, my) : x;
+    // };
+    x = area.x();
+    y0 = area.y0();
+    y1 = area.y1();
+    bisectorX = d3.bisector(x).right;
+  };
+
+  if (area) {
+    my.area(area);
+  }
+
+  return my;
 };
+
+export default areaLabel;
