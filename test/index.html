@@ -79,7 +79,7 @@
           .attr('class', 'area-label')
         .merge(labels)
           .text(d => d.key)
-          .each(d3.areaLabel(area))
+          .attr('transform', d3.areaLabel(area))
 
     </script>
   </body>

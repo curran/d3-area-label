@@ -1,3 +1,4 @@
+// Finds the largest value that passes the test within some epsilon tolerance.
 // See https://en.wikipedia.org/wiki/Bisection_method#Algorithm
 function bisection(a, b, test, epsilon, maxIterations) {
   var i, c, passesTest, withinEpsilon;
@@ -38,8 +39,12 @@ function areaLabel(area) {
 
       // The maximum number of iterations for the bisection method.
       // Typical iterations for convervence on 0.001 epsilon are between 15 and 20.
-      maxIterations = 100;
+      maxIterations = 100,
 
+      paddingLeft = 0,
+      paddingRight = 0,
+      paddingTop = 0,
+      paddingBottom = 0;
 
   // Returns true if there is at least one rectangle
   // of the given aspect ratio and scale
@@ -94,7 +99,8 @@ function areaLabel(area) {
         // Output the coordinates for use in label transform.
         return {
           x: x0,
-          y: ceiling
+          y: ceiling,
+          width: width
         };
       }
     }
@@ -104,10 +110,16 @@ function areaLabel(area) {
   function my(data) {
 
     // The bounding box of the text label as-is.
-    var bbox = this.getBBox();
+    var box = this.getBBox();
+
+    // Account for padding.
+    var paddingFactorX = 1 + paddingLeft + paddingRight;
+    var paddingFactorY = 1 + paddingTop + paddingBottom;
+    var boxWidth = box.width * paddingFactorX;
+    var boxHeight = box.height * paddingFactorY;
 
     // The aspect ratio of the text label bounding box.
-    var aspect = bbox.width / bbox.height;
+    var aspect = boxWidth / boxHeight;
 
     // The test function for use in the bisection method.
     var test = function (testHeight){
@@ -116,19 +128,21 @@ function areaLabel(area) {
 
     // Use the bisection method to find the largest height label that fits.
     var height = bisection(minHeight, maxHeight, test, epsilon, maxIterations);
+    var width = aspect * height;
 
     // Get the X and Y coordinates for the largest height label that fits.
     var fit = fits(data, aspect, height);
-    var x = fit.x;
-    var y = fit.y;
+
+    // Account for padding.
+    var fitX = fit.x + width / paddingFactorX * paddingLeft;
+    var fitY = fit.y + height / paddingFactorY * paddingTop;
 
     // Translate and scale the label to the computed position and size.
-    d3.select(this)
-        .attr("transform", [
-          "translate(" + x + "," + y + ")",
-          "scale(" + height / bbox.height + ")",
-          "translate(" + -bbox.x + "," + -bbox.y + ")"
-        ].join(" "));
+    return [
+      "translate(" + fitX + "," + fitY + ")",
+      "scale(" + height / boxHeight + ")",
+      "translate(" + -box.x + "," + -box.y + ")"
+    ].join(" ");
   }
 
   my.x = function(_) {
@@ -167,6 +181,34 @@ function areaLabel(area) {
 
   my.maxIterations = function(_) {
     return arguments.length ? (maxIterations = +_, my) : maxIterations;
+  };
+
+  my.paddingLeft = function(_) {
+    return arguments.length ? (paddingLeft = +_, my) : paddingLeft;
+  };
+
+  my.paddingRight = function(_) {
+    return arguments.length ? (paddingRight = +_, my) : paddingRight;
+  };
+
+  my.paddingTop = function(_) {
+    return arguments.length ? (paddingTop = +_, my) : paddingTop;
+  };
+
+  my.paddingBottom = function(_) {
+    return arguments.length ? (paddingBottom = +_, my) : paddingBottom;
+  };
+
+  my.paddingX = function(_) {
+    my.paddingLeft(_).paddingRight(_);
+  };
+
+  my.paddingY = function(_) {
+    my.paddingTop(_).paddingBottom(_);
+  };
+
+  my.padding = function(_) {
+    my.paddingX(_).paddingY(_);
   };
 
   if (area) {
