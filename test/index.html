@@ -52,9 +52,6 @@
         .y1(d => yScale(d[1]))
         .curve(d3.curveBasis)
       
-      const fitLocal = d3.local()
-      const areaLabel = d3.areaLabel(area);
-
       const stacked = stack(data)
 
       xScale
@@ -76,25 +73,13 @@
           .attr('fill', d => colorScale(d.key))
           .attr('stroke', d => colorScale(d.key))
 
-      let labels = svg.selectAll('text').data(stacked)
-      const labelsEnter = labels
+      const labels = svg.selectAll('text').data(stacked)
+      labels
         .enter().append('text')
           .attr('class', 'area-label')
-      labelsEnter
         .merge(labels)
           .text(d => d.key)
-          .each(function (data) {
-            fitLocal.set(this, areaLabel.call(this, data))
-          })
-          .attr('transform', function () {
-            return fitLocal.get(this)
-          })
-
-      labels.select('title')
-        .merge(labelsEnter.append('title'))
-          .text(function (data) {
-            return fitLocal.get(this).numIterations + ' iterations'
-          })
+          .attr('transform', d3.areaLabel(area))
 
     </script>
   </body>
