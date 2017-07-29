@@ -1,3 +1,16 @@
+// This is the thing returned by areaLabel().
+function Fit() {
+}
+
+// Returns a transform string that will
+// translate and scale the label to the computed position and size.
+Fit.prototype.toString = function (){
+  return [
+    "translate(" + this.xTranslate + "," + this.yTranslate + ")",
+    "scale(" + this.scale + ")"
+  ].join(" ");
+};
+
 // Finds the largest value that passes the test within some epsilon tolerance.
 // See https://en.wikipedia.org/wiki/Bisection_method#Algorithm
 function bisection(a, b, test, epsilon, maxIterations) {
@@ -33,6 +46,11 @@ function areaLabel(area) {
       paddingRight = 0,
       paddingTop = 0,
       paddingBottom = 0;
+
+  // Gets the height of the area for a particular datum.
+  function getHeight(d) {
+    return y0(d) - y1(d);
+  }
 
   // Returns true if there is at least one rectangle
   // of the given aspect ratio and scale
@@ -84,12 +102,13 @@ function areaLabel(area) {
           return true;
         }
 
-        // Output the coordinates for use in label transform.
-        return {
-          x: x0,
-          y: ceiling,
-          width: width
-        };
+        // Output the solution for use in label transform.
+        var fit = new Fit();
+        fit.x = x0;
+        fit.y = ceiling;
+        fit.width = width;
+        fit.height = height;
+        return fit;
       }
     }
     return false;
@@ -110,9 +129,7 @@ function areaLabel(area) {
     var aspect = boxWidth / boxHeight;
 
     // Compute maximum possible label bounding box height in pixels.
-    var maxHeight = d3.max(data, function (d) {
-      return y0(d) - y1(d);
-    });
+    var maxHeight = d3.max(data, getHeight);
 
     // The test function for use in the bisection method.
     var test = function (testHeight){
@@ -121,25 +138,20 @@ function areaLabel(area) {
 
     // Use the bisection method to find the largest height label that fits.
     var height = bisection(minHeight, maxHeight, test, epsilon, maxIterations);
-    var width = aspect * height;
 
-    // Get the X and Y coordinates for the largest height label that fits.
+    // Get the (x, y, width, height) for the largest height label that fits.
     var fit = fits(data, aspect, height);
 
     // Account for padding.
-    var fitX = fit.x + width / paddingFactorX * paddingLeft;
-    var fitY = fit.y + height / paddingFactorY * paddingTop;
+    var xInner = fit.x + fit.width / paddingFactorX * paddingLeft;
+    var yInner = fit.y + fit.height / paddingFactorY * paddingTop;
 
-    // Translate and scale the label to the computed position and size.
-    return {
-      toString: function() {
-        return [
-          "translate(" + fitX + "," + fitY + ")",
-          "scale(" + height / boxHeight + ")",
-          "translate(" + -box.x + "," + -box.y + ")"
-        ].join(" ")
-      }
-    }
+    // Compute the scale and translate.
+    fit.scale = height / boxHeight;
+    fit.xTranslate = xInner - fit.scale * box.x;
+    fit.yTranslate = yInner - fit.scale * box.y;
+
+    return fit;
   }
 
   my.x = function(_) {
