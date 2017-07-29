@@ -69,7 +69,7 @@
           ])
           .range([height, 0])
         
-        const transition = d3.transition().duration(1000)
+        const transition = d3.transition().duration(750)
         
         const paths = svg.selectAll('path').data(stacked)
         paths
@@ -90,17 +90,37 @@
             .attr('transform', d3.areaLabel(area))
       }
       
-      const renderGeneratedData = () => {
-        render(generateData([
+const datas = [
+        generateData([
           'Leonardo',
           'Donatello',
           'Raphael',
           'Michelangelo'
-        ]))
+        ]),
+        generateData([
+          'Leonardo',
+          'Donatello',
+          'Raphael',
+          'Michelangelo'
+        ]),
+        generateData([
+          'Leonardo',
+          'Donatello',
+          'Raphael',
+          'Michelangelo'
+        ])
+        ]
+
+
+
+        let i = 0;
+      const renderGeneratedData = () => {
+        i = (i+1)%3
+        render(datas[i])
       }
       
       renderGeneratedData()
-      setInterval(renderGeneratedData, 2000)
+      setInterval(renderGeneratedData, 1000)
       
     </script>
   </body>
