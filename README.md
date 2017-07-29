@@ -13,7 +13,7 @@ If you use NPM, `npm install d3-area-label`. Otherwise, download the [latest rel
 
 <a href="#area-label" name="area-label">#</a> <b>areaLabel</b>(<i>area</i>)
 
-Computes the optimal position and size for a label. Also positions the label using SVG transform.
+Returns a function that computes the optimal position and size for a label and returns a transform string.
 
 Example usage:
 
@@ -24,7 +24,7 @@ labels
     .attr('class', 'area-label')
   .merge(labels)
     .text(d => d.key)
-    .each(d3.areaLabel(area)) // <--------------------- Call the function like this.
+    .attr('transform', d3.areaLabel(area)) // <---------- Call the function like this.
 ```
 
 For more details and context, see [test/index.html](test/index.html).

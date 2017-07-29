@@ -119,16 +119,13 @@ function areaLabel(area) {
 
     // Get the X and Y coordinates for the largest height label that fits.
     var fit = fits(data, aspect, height);
-    var x = fit.x;
-    var y = fit.y;
 
     // Translate and scale the label to the computed position and size.
-    d3.select(this)
-        .attr("transform", [
-          "translate(" + x + "," + y + ")",
-          "scale(" + height / bbox.height + ")",
-          "translate(" + -bbox.x + "," + -bbox.y + ")"
-        ].join(" "));
+    return [
+      "translate(" + fit.x + "," + fit.y + ")",
+      "scale(" + height / bbox.height + ")",
+      "translate(" + -bbox.x + "," + -bbox.y + ")"
+    ].join(" ");
   }
 
   my.x = function(_) {
