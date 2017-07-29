@@ -41,13 +41,10 @@ function areaLabel(area) {
       // Typical iterations for convervence on 0.001 epsilon are between 15 and 20.
       maxIterations = 100,
 
-      padding = {
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0
-      };
-
+      paddingLeft = 0,
+      paddingRight = 0,
+      paddingTop = 0,
+      paddingBottom = 0;
 
   // Returns true if there is at least one rectangle
   // of the given aspect ratio and scale
@@ -116,8 +113,8 @@ function areaLabel(area) {
     var box = this.getBBox();
 
     // Account for padding.
-    var paddingFactorX = 1 + padding.left + padding.right;
-    var paddingFactorY = 1 + padding.top + padding.bottom;
+    var paddingFactorX = 1 + paddingLeft + paddingRight;
+    var paddingFactorY = 1 + paddingTop + paddingBottom;
     var boxWidth = box.width * paddingFactorX;
     var boxHeight = box.height * paddingFactorY;
 
@@ -137,8 +134,8 @@ function areaLabel(area) {
     var fit = fits(data, aspect, height);
 
     // Account for padding.
-    var fitX = fit.x + width / paddingFactorX * padding.left;
-    var fitY = fit.y + height / paddingFactorY * padding.top;
+    var fitX = fit.x + width / paddingFactorX * paddingLeft;
+    var fitY = fit.y + height / paddingFactorY * paddingTop;
 
     // Translate and scale the label to the computed position and size.
     return [
@@ -184,6 +181,34 @@ function areaLabel(area) {
 
   my.maxIterations = function(_) {
     return arguments.length ? (maxIterations = +_, my) : maxIterations;
+  };
+
+  my.paddingLeft = function(_) {
+    return arguments.length ? (paddingLeft = +_, my) : paddingLeft;
+  };
+
+  my.paddingRight = function(_) {
+    return arguments.length ? (paddingRight = +_, my) : paddingRight;
+  };
+
+  my.paddingTop = function(_) {
+    return arguments.length ? (paddingTop = +_, my) : paddingTop;
+  };
+
+  my.paddingBottom = function(_) {
+    return arguments.length ? (paddingBottom = +_, my) : paddingBottom;
+  };
+
+  my.paddingX = function(_) {
+    my.paddingLeft(_).paddingRight(_);
+  };
+
+  my.paddingY = function(_) {
+    my.paddingTop(_).paddingBottom(_);
+  };
+
+  my.padding = function(_) {
+    my.paddingX(_).paddingY(_);
   };
 
   if (area) {
