@@ -31,9 +31,6 @@ function areaLabel(area) {
       // The minimum label bounding box height in pixels.
       minHeight = 2,
 
-      // The maximum label bounding box height in pixels.
-      maxHeight = 1000,
-
       // The tolerance within we wish to optimize the bounding box height.
       epsilon = 0.01,
 
@@ -121,6 +118,11 @@ function areaLabel(area) {
     // The aspect ratio of the text label bounding box.
     var aspect = boxWidth / boxHeight;
 
+    // Compute maximum possible label bounding box height in pixels.
+    var maxHeight = d3.max(data, function (d) {
+      return y0(d) - y1(d);
+    });
+
     // The test function for use in the bisection method.
     var test = function (testHeight){
       return fits(data, aspect, testHeight, true);
@@ -168,11 +170,6 @@ function areaLabel(area) {
 
   my.minHeight = function(_) {
     return arguments.length ? (minHeight = +_, my) : minHeight;
-  };
-
-  // TODO compute this from the area, no need to have this constant.
-  my.maxHeight = function(_) {
-    return arguments.length ? (maxHeight = +_, my) : maxHeight;
   };
 
   my.epsilon = function(_) {
