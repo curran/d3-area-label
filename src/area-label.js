@@ -131,11 +131,15 @@ function areaLabel(area) {
     var fitY = fit.y + height / paddingFactorY * paddingTop;
 
     // Translate and scale the label to the computed position and size.
-    return [
-      "translate(" + fitX + "," + fitY + ")",
-      "scale(" + height / boxHeight + ")",
-      "translate(" + -box.x + "," + -box.y + ")"
-    ].join(" ");
+    return {
+      toString: function() {
+        return [
+          "translate(" + fitX + "," + fitY + ")",
+          "scale(" + height / boxHeight + ")",
+          "translate(" + -box.x + "," + -box.y + ")"
+        ].join(" ")
+      }
+    }
   }
 
   my.x = function(_) {
