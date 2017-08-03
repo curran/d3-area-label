@@ -112,13 +112,17 @@ function areaLabel(area) {
           };
         });
 
-      options.xIndex = interpolateResolutionScale.invert;
+      options.xIndex = function (x) {
+        return Math.ceil(interpolateResolutionScale.invert(x));
+      };
       options.data = interpolatedData;
       options.x = function (d) { return d.x; };
       options.y0 = function (d) { return d.y0; };
       options.y1 = function (d) { return d.y1; };
     } else {
-      options.xIndex = function (x) { return bisectorX(data, x); },
+      options.xIndex = function (x) {
+        return bisectorX(data, x);
+      },
       options.data = data;
       options.x = x;
       options.y0 = y0;

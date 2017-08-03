@@ -1,1 +1,1 @@
-export {default as areaLabel} from "./src/area-label";
+export { default as areaLabel } from "./src/area-label";
