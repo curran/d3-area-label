@@ -76,7 +76,7 @@ function areaLabel(area) {
       i1 = bisectorX(data, x1);
       ceiling = -Infinity;
       floor = Infinity;
-      for(j = i0; j < i1; j++) {
+      for(j = i0; j <= i1; j++) {
         d = data[j];
 
         bottom = y0(d);
