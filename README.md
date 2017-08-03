@@ -66,6 +66,10 @@ The tolerance within we wish to optimize the bounding box height (in pixels). De
 
 The maximum number of iterations for the [bisection method algorithm](https://en.wikipedia.org/wiki/Bisection_method#Algorithm), which is used to find the maximum height rectangle that fits within the area.
 
+<a name="xValues" href="#xValues">#</a> <i>areaLabel</i>.<b>xValues</b>(<i>xValues</i>)
+
+The number of possible X positions to check for placing the leftmost edge of the label bounding box. The X extent of the area is subdivided evenly into this many points. When each point is checked, linear interpolation is used to estimate the data value. Default is 200.
+
 <a name="paddingLeft" href="#paddingLeft">#</a> <i>areaLabel</i>.<b>paddingLeft</b>(<i>paddingLeft</i>)
 
 The left padding for labels. This should be a value between 0 and 1. Default is 0.

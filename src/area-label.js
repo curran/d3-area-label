@@ -15,11 +15,11 @@ function areaLabel(area) {
       minHeight = 2,
       epsilon = 0.01,
       maxIterations = 100,
+      xValues = 200,
       paddingLeft = 0,
       paddingRight = 0,
       paddingTop = 0,
       paddingBottom = 0,
-      xValues = 100,
       xValuesScale = d3.scaleLinear(),
       numIterations;
 
