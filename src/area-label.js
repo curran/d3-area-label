@@ -19,6 +19,8 @@ function areaLabel(area) {
       paddingRight = 0,
       paddingTop = 0,
       paddingBottom = 0,
+      xValues = 100,
+      xValuesScale = d3.scaleLinear(),
       numIterations;
 
   // Gets the height of the area for a particular datum.
@@ -49,21 +51,30 @@ function areaLabel(area) {
     }
     return null;
   }
-
+  
+  function interpolate(data, xValue, yAccessor) {
+    var i = bisectorX(data, xValue, 0, data.length - 1);
+    if (i > 0) {
+      var a = data[i - 1];
+      var b = data[i];
+      var t = (xValue - x(a)) / (x(b) - x(a));
+      return yAccessor(a) * (1 - t) + yAccessor(b) * t;
+    }
+    return yAccessor(data[i]);
+  }
 
   // Returns true if there is at least one rectangle
   // of the given aspect ratio and scale
   // that fits somewhere within the area.
   function fits(data, aspect, height, justTest) {
-    var x0, x1, i0, i1, j, d, top, bottom, ceiling, floor,
+    var x0, x1, i0, i1, j, xValue, top, bottom, ceiling, floor,
         width = aspect * height,
         xMax = x(data[data.length - 1]);
 
     // Check if we can fit the rectangle at an X position
     // corresponding with one of the X values from the data.
-    for(i0 = 0; i0 < data.length; i0++) {
-      d = data[i0];
-      x0 = x(d);
+    for (i0 = 0; i0 < xValues; i0++) {
+      x0 = xValuesScale(i0);
       x1 = x0 + width;
 
       // Don't go off the right edge of the area.
@@ -73,18 +84,19 @@ function areaLabel(area) {
       
       // Test until we reach the rightmost X position
       // within the X positions of the data points.
-      i1 = bisectorX(data, x1);
       ceiling = -Infinity;
       floor = Infinity;
+      i1 = xValuesScale.invert(x1);
       for(j = i0; j <= i1; j++) {
-        d = data[j];
+        xValue = xValuesScale(j);
 
-        bottom = y0(d);
+        bottom = interpolate(data, xValue, y0);
+        top = interpolate(data, xValue, y1);
+
         if(bottom < floor) {
           floor = bottom;
         }
 
-        top = y1(d);
         if(top > ceiling) {
           ceiling = top;
         }
@@ -129,6 +141,11 @@ function areaLabel(area) {
 
     // Compute maximum possible label bounding box height in pixels.
     var maxHeight = d3.max(data, getHeight);
+
+    // Compute the X extent once, to be reused for every height test.
+    xValuesScale
+      .domain([0, xValues - 1])
+      .range(d3.extent(data, x));
 
     // The test function for use in the bisection method.
     var test = function (testHeight){
@@ -204,6 +221,10 @@ function areaLabel(area) {
 
   my.maxIterations = function(_) {
     return arguments.length ? (maxIterations = +_, my) : maxIterations;
+  };
+
+  my.xValues = function(_) {
+    return arguments.length ? (xValues = +_, my) : xValues;
   };
 
   my.paddingLeft = function(_) {
