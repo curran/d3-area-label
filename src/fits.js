@@ -7,13 +7,16 @@ export default function fits(options) {
       height = options.height,
       justTest = options.justTest,
       xMax = options.xMax,
-      xIndex = options.xIndex;
+      xIndex = options.xIndex,
+      x = options.x,
+      y1 = options.y1,
+      y0 = options.y0;
 
   // Check if we can fit the rectangle at an X position
   // corresponding with one of the X values from the data.
   for(i0 = 0; i0 < data.length; i0++) {
     d = data[i0];
-    x0 = d.x;
+    x0 = x(d);
     x1 = x0 + width;
 
     // Don't go off the right edge of the area.
@@ -29,12 +32,12 @@ export default function fits(options) {
     for(j = i0; j <= i1; j++) {
       d = data[j];
 
-      bottom = d.y0;
+      bottom = y0(d);
       if(bottom < floor) {
         floor = bottom;
       }
 
-      top = d.y1;
+      top = y1(d);
       if(top > ceiling) {
         ceiling = top;
       }

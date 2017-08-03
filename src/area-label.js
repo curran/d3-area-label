@@ -109,7 +109,10 @@ function areaLabel(area) {
       data: interpolatedData,
       justTest: true,
       xMax: xExtent[1],
-      xIndex: xValuesScale.invert
+      xIndex: xValuesScale.invert,
+      x: function (d) { return d.x; },
+      y0: function (d) { return d.y0; },
+      y1: function (d) { return d.y1; }
     };
 
     var test = function (testHeight){
