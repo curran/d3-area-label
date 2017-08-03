@@ -17,12 +17,12 @@ function areaLabel(area) {
       minHeight = 2,
       epsilon = 0.01,
       maxIterations = 100,
-      xValues = 200,
+      interpolate = true,
+      interpolateResolution = 200,
       paddingLeft = 0,
       paddingRight = 0,
       paddingTop = 0,
       paddingBottom = 0,
-      xValuesScale = d3.scaleLinear(),
       numIterations;
 
   // Gets the height of the area for a particular datum.
@@ -55,7 +55,7 @@ function areaLabel(area) {
     return null;
   }
   
-  function interpolate(data, xValue, y) {
+  function interpolateY(data, xValue, y) {
     var i = bisectorX(data, xValue, 0, data.length - 1),
         a = data[i - 1],
         b = data[i],
@@ -90,30 +90,40 @@ function areaLabel(area) {
 
     // Compute the X extent once, to be reused for every height test.
     var xExtent = d3.extent(data, x);
-    xValuesScale
-      .domain([0, xValues - 1])
-      .range(xExtent);
-
-    var interpolatedData = d3.range(xValues)
-      .map(function (i) {
-        var xValue = xValuesScale(i);
-        return {
-          x: xValue,
-          y0: interpolate(data, xValue, y0),
-          y1: interpolate(data, xValue, y1)
-        };
-      });
 
     // The test function for use in the bisection method.
     var options = {
-      data: interpolatedData,
       justTest: true,
-      xMax: xExtent[1],
-      xIndex: xValuesScale.invert,
-      x: function (d) { return d.x; },
-      y0: function (d) { return d.y0; },
-      y1: function (d) { return d.y1; }
+      xMax: xExtent[1]
     };
+
+    if (interpolate) {
+      var interpolateResolutionScale = d3.scaleLinear()
+        .domain([0, interpolateResolution - 1])
+        .range(xExtent);
+
+      var interpolatedData = d3.range(interpolateResolution)
+        .map(function (i) {
+          var xValue = interpolateResolutionScale(i);
+          return {
+            x: xValue,
+            y0: interpolateY(data, xValue, y0),
+            y1: interpolateY(data, xValue, y1)
+          };
+        });
+
+      options.xIndex = interpolateResolutionScale.invert;
+      options.data = interpolatedData;
+      options.x = function (d) { return d.x; };
+      options.y0 = function (d) { return d.y0; };
+      options.y1 = function (d) { return d.y1; };
+    } else {
+      options.xIndex = function (x) { return bisectorX(data, x); },
+      options.data = data;
+      options.x = x;
+      options.y0 = y0;
+      options.y1 = y1;
+    }
 
     var test = function (testHeight){
       options.height = testHeight;
@@ -193,8 +203,12 @@ function areaLabel(area) {
     return arguments.length ? (maxIterations = +_, my) : maxIterations;
   };
 
-  my.xValues = function(_) {
-    return arguments.length ? (xValues = +_, my) : xValues;
+  my.interpolate = function(_) {
+    return arguments.length ? (interpolate = +_, my) : interpolate;
+  };
+
+  my.interpolateResolution = function(_) {
+    return arguments.length ? (interpolateResolution = +_, my) : interpolateResolution;
   };
 
   my.paddingLeft = function(_) {
