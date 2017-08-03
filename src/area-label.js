@@ -107,7 +107,6 @@ function areaLabel(area) {
     // The test function for use in the bisection method.
     var options = {
       data: interpolatedData,
-      aspect: aspect,
       justTest: true,
       xMax: xExtent[1],
       xIndex: function (x) {
@@ -117,6 +116,7 @@ function areaLabel(area) {
 
     var test = function (testHeight){
       options.height = testHeight;
+      options.width = aspect * testHeight;
       return fits(options);
     };
 
