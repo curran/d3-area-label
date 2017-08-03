@@ -28,8 +28,9 @@ function areaLabel(area) {
     return y0(d) - y1(d);
   }
 
-  // Finds the largest value that passes the test within some epsilon tolerance.
-  // See https://en.wikipedia.org/wiki/Bisection_method#Algorithm
+  // Finds the largest value that passes the test
+  // within some epsilon tolerance.
+  // https://en.wikipedia.org/wiki/Bisection_method#Algorithm
   function bisection(a, b, test, epsilon, maxIterations) {
     var i, c, passesTest, withinEpsilon;
     for(i = 0; i < maxIterations; i++){
@@ -52,13 +53,18 @@ function areaLabel(area) {
     return null;
   }
   
-  function interpolate(data, xValue, yAccessor) {
-    var i = bisectorX(data, xValue, 0, data.length - 1);
+  function interpolate(data, xValue, y) {
+    var a, b, ax, bx, ay, by, t,
+        i = bisectorX(data, xValue, 0, data.length - 1);
     if (i > 0) {
-      var a = data[i - 1];
-      var b = data[i];
-      var t = (xValue - x(a)) / (x(b) - x(a));
-      return yAccessor(a) * (1 - t) + yAccessor(b) * t;
+      a = data[i - 1];
+      b = data[i];
+      ax = x(a);
+      ay = y(a);
+      bx = x(b);
+      by = y(b);
+      t = (xValue - ax) / (bx - ax);
+      return ay * (1 - t) + by * t;
     }
     return yAccessor(data[i]);
   }
@@ -86,7 +92,7 @@ function areaLabel(area) {
       // within the X positions of the data points.
       ceiling = -Infinity;
       floor = Infinity;
-      i1 = xValuesScale.invert(x1);
+      i1 = Math.ceil(xValuesScale.invert(x1));
       for(j = i0; j <= i1; j++) {
         xValue = xValuesScale(j);
 

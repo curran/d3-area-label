@@ -80,6 +80,7 @@
           .transition(transition)
             .attr('d', area)
 
+        const startTime = Date.now();
         const labels = svg.selectAll('text').data(stacked)
         labels
           .enter().append('text')
@@ -88,6 +89,7 @@
             .text(d => d.key)
           .transition(transition)
             .attr('transform', d3.areaLabel(area))
+        console.log(Date.now() - startTime + " ms for label placement");
       }
       
       const renderGeneratedData = () => {
