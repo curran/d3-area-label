@@ -1,10 +1,12 @@
+import fits from './fits';
+
 // Returns a transform string that will
 // translate and scale the label to the computed position and size.
-const toTransformString = function (){
+function toTransformString() {
   return [
-    "translate(" + this.xTranslate + "," + this.yTranslate + ")",
-    "scale(" + this.scale + ")"
-  ].join(" ");
+    'translate(' + this.xTranslate + ',' + this.yTranslate + ')',
+    'scale(' + this.scale + ')'
+  ].join(' ');
 };
 
 function areaLabel(area) {
@@ -68,64 +70,6 @@ function areaLabel(area) {
   // Returns true if there is at least one rectangle
   // of the given aspect ratio and scale
   // that fits somewhere within the area.
-  function fits(interpolatedData, aspect, height, justTest) {
-    var x0, x1, i0, i1, j, d, top, bottom, ceiling, floor,
-        width = aspect * height,
-        xMax = xValuesScale.range()[1];
-
-    // Check if we can fit the rectangle at an X position
-    // corresponding with one of the X values from the interpolatedData.
-    for(i0 = 0; i0 < xValues; i0++) {
-      d = interpolatedData[i0];
-      x0 = d.x;
-      x1 = x0 + width;
-
-      // Don't go off the right edge of the area.
-      if (x1 > xMax) {
-        break;
-      }
-      
-      // Test until we reach the rightmost X position
-      // within the X positions of the interpolatedData points.
-      i1 = xValuesScale.invert(x1);
-      ceiling = -Infinity;
-      floor = Infinity;
-      for(j = i0; j <= i1; j++) {
-        d = interpolatedData[j];
-
-        bottom = d.y0;
-        if(bottom < floor) {
-          floor = bottom;
-        }
-
-        top = d.y1;
-        if(top > ceiling) {
-          ceiling = top;
-        }
-
-        // Break as soon as we know the rectangle wil not fit.
-        if ((floor - ceiling) < height) {
-          break;
-        }
-      }
-      if ((floor - ceiling) >= height) {
-
-        // Avoid creating new objects unnecessarily while just testing.
-        if (justTest) {
-          return true;
-        }
-
-        // Output the solution for use in label transform.
-        return {
-          x: x0,
-          y: ceiling,
-          width: width,
-          height: height
-        };
-      }
-    }
-    return false;
-  }
 
   function my(data) {
 
@@ -145,9 +89,10 @@ function areaLabel(area) {
     var maxHeight = d3.max(data, getHeight);
 
     // Compute the X extent once, to be reused for every height test.
+    var xExtent = d3.extent(data, x);
     xValuesScale
       .domain([0, xValues - 1])
-      .range(d3.extent(data, x));
+      .range(xExtent);
 
     var interpolatedData = d3.range(xValues)
       .map(function (i) {
@@ -160,8 +105,19 @@ function areaLabel(area) {
       });
 
     // The test function for use in the bisection method.
+    var options = {
+      data: interpolatedData,
+      aspect: aspect,
+      justTest: true,
+      xMax: xExtent[1],
+      xIndex: function (x) {
+        return xValuesScale.invert(x);
+      }
+    };
+
     var test = function (testHeight){
-      return fits(interpolatedData, aspect, testHeight, true);
+      options.height = testHeight;
+      return fits(options);
     };
 
     // Use the bisection method to find the largest height label that fits.
@@ -182,7 +138,8 @@ function areaLabel(area) {
     }
 
     // Get the (x, y, width, height) for the largest height label that fits.
-    var fit = fits(interpolatedData, aspect, height);
+    options.justTest = false;
+    var fit = fits(options);
 
     // Account for padding.
     var xInner = fit.x + fit.width / paddingFactorX * paddingLeft;
