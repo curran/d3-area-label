@@ -66,6 +66,22 @@ The tolerance within we wish to optimize the bounding box height (in pixels). De
 
 The maximum number of iterations for the [bisection method algorithm](https://en.wikipedia.org/wiki/Bisection_method#Algorithm), which is used to find the maximum height rectangle that fits within the area.
 
+<a name="interpolate" href="#interpolate">#</a> <i>areaLabel</i>.<b>interpolate</b>(<i>interpolate</i>)
+
+A boolean value that determines whether or not linear interpolation is used for computing label positions.
+
+If set to *false*, only X coordinates that correspond to data points are considered for use as the leftmost position of the label bounding box. In cases where there is a high number of evenly spaced data points, a value of *false* works quite well. When there is a low number of data points, a value of *false* leads to embarassingly pathetic label placements.
+
+If set to *true*, then a fixed number of X coordinates (**[interpolateResolution](#interpolateResolution)** to be exact), not necessarily corresponding to data points, are considered for use as the leftmost position of the label bounding box. The upper and lower Y values for those X values are imputed from the nearest X values from the data using [linear interpolation](https://en.wikipedia.org/wiki/Linear_interpolation). When there is a low number of data points, a value of *true* improves label placement by leaps and bounds. A value of *true* also leads to more expensive computation for placing labels, so if you're encountering performance problems, try setting this to *false*.
+
+Default is *true*.
+
+<a name="interpolateResolution" href="#interpolateResolution">#</a> <i>areaLabel</i>.<b>interpolateResolution</b>(<i>interpolateResolution</i>)
+
+The integer number of possible X positions to check for placing the leftmost edge of the label bounding box. The X extent of the area is subdivided evenly into this many points. When each point is checked, linear interpolation is used to estimate the data value. Default is 200.
+
+This only comes into effect if **[interpolate](#interpolate)** is set to *true*.
+
 <a name="paddingLeft" href="#paddingLeft">#</a> <i>areaLabel</i>.<b>paddingLeft</b>(<i>paddingLeft</i>)
 
 The left padding for labels. This should be a value between 0 and 1. Default is 0.

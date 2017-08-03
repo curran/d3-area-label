@@ -1,10 +1,12 @@
+import fits from './fits';
+
 // Returns a transform string that will
 // translate and scale the label to the computed position and size.
-const toTransformString = function (){
+function toTransformString() {
   return [
-    "translate(" + this.xTranslate + "," + this.yTranslate + ")",
-    "scale(" + this.scale + ")"
-  ].join(" ");
+    'translate(' + this.xTranslate + ',' + this.yTranslate + ')',
+    'scale(' + this.scale + ')'
+  ].join(' ');
 };
 
 function areaLabel(area) {
@@ -15,6 +17,8 @@ function areaLabel(area) {
       minHeight = 2,
       epsilon = 0.01,
       maxIterations = 100,
+      interpolate = true,
+      interpolateResolution = 200,
       paddingLeft = 0,
       paddingRight = 0,
       paddingTop = 0,
@@ -26,8 +30,9 @@ function areaLabel(area) {
     return y0(d) - y1(d);
   }
 
-  // Finds the largest value that passes the test within some epsilon tolerance.
-  // See https://en.wikipedia.org/wiki/Bisection_method#Algorithm
+  // Finds the largest value that passes the test
+  // within some epsilon tolerance.
+  // https://en.wikipedia.org/wiki/Bisection_method#Algorithm
   function bisection(a, b, test, epsilon, maxIterations) {
     var i, c, passesTest, withinEpsilon;
     for(i = 0; i < maxIterations; i++){
@@ -49,69 +54,22 @@ function areaLabel(area) {
     }
     return null;
   }
-
+  
+  function interpolateY(data, xValue, y) {
+    var i = bisectorX(data, xValue, 0, data.length - 1),
+        a = data[i - 1],
+        b = data[i],
+        ax = x(a),
+        ay = y(a),
+        bx = x(b),
+        by = y(b),
+        t = (xValue - ax) / (bx - ax);
+    return ay * (1 - t) + by * t;
+  }
 
   // Returns true if there is at least one rectangle
   // of the given aspect ratio and scale
   // that fits somewhere within the area.
-  function fits(data, aspect, height, justTest) {
-    var x0, x1, i0, i1, j, d, top, bottom, ceiling, floor,
-        width = aspect * height,
-        xMax = x(data[data.length - 1]);
-
-    // Check if we can fit the rectangle at an X position
-    // corresponding with one of the X values from the data.
-    for(i0 = 0; i0 < data.length; i0++) {
-      d = data[i0];
-      x0 = x(d);
-      x1 = x0 + width;
-
-      // Don't go off the right edge of the area.
-      if (x1 > xMax) {
-        break;
-      }
-      
-      // Test until we reach the rightmost X position
-      // within the X positions of the data points.
-      i1 = bisectorX(data, x1);
-      ceiling = -Infinity;
-      floor = Infinity;
-      for(j = i0; j <= i1; j++) {
-        d = data[j];
-
-        bottom = y0(d);
-        if(bottom < floor) {
-          floor = bottom;
-        }
-
-        top = y1(d);
-        if(top > ceiling) {
-          ceiling = top;
-        }
-
-        // Break as soon as we know the rectangle wil not fit.
-        if ((floor - ceiling) < height) {
-          break;
-        }
-      }
-      if ((floor - ceiling) >= height) {
-
-        // Avoid creating new objects unnecessarily while just testing.
-        if (justTest) {
-          return true;
-        }
-
-        // Output the solution for use in label transform.
-        return {
-          x: x0,
-          y: ceiling,
-          width: width,
-          height: height
-        };
-      }
-    }
-    return false;
-  }
 
   function my(data) {
 
@@ -130,9 +88,51 @@ function areaLabel(area) {
     // Compute maximum possible label bounding box height in pixels.
     var maxHeight = d3.max(data, getHeight);
 
+    // Compute the X extent once, to be reused for every height test.
+    var xExtent = d3.extent(data, x);
+
     // The test function for use in the bisection method.
+    var options = {
+      justTest: true,
+      xMax: xExtent[1]
+    };
+
+    if (interpolate) {
+      var interpolateResolutionScale = d3.scaleLinear()
+        .domain([0, interpolateResolution - 1])
+        .range(xExtent);
+
+      var interpolatedData = d3.range(interpolateResolution)
+        .map(function (i) {
+          var xValue = interpolateResolutionScale(i);
+          return {
+            x: xValue,
+            y0: interpolateY(data, xValue, y0),
+            y1: interpolateY(data, xValue, y1)
+          };
+        });
+
+      options.xIndex = function (x) {
+        return Math.ceil(interpolateResolutionScale.invert(x));
+      };
+      options.data = interpolatedData;
+      options.x = function (d) { return d.x; };
+      options.y0 = function (d) { return d.y0; };
+      options.y1 = function (d) { return d.y1; };
+    } else {
+      options.xIndex = function (x) {
+        return bisectorX(data, x);
+      },
+      options.data = data;
+      options.x = x;
+      options.y0 = y0;
+      options.y1 = y1;
+    }
+
     var test = function (testHeight){
-      return fits(data, aspect, testHeight, true);
+      options.height = testHeight;
+      options.width = aspect * testHeight;
+      return fits(options);
     };
 
     // Use the bisection method to find the largest height label that fits.
@@ -153,7 +153,8 @@ function areaLabel(area) {
     }
 
     // Get the (x, y, width, height) for the largest height label that fits.
-    var fit = fits(data, aspect, height);
+    options.justTest = false;
+    var fit = fits(options);
 
     // Account for padding.
     var xInner = fit.x + fit.width / paddingFactorX * paddingLeft;
@@ -204,6 +205,14 @@ function areaLabel(area) {
 
   my.maxIterations = function(_) {
     return arguments.length ? (maxIterations = +_, my) : maxIterations;
+  };
+
+  my.interpolate = function(_) {
+    return arguments.length ? (interpolate = +_, my) : interpolate;
+  };
+
+  my.interpolateResolution = function(_) {
+    return arguments.length ? (interpolateResolution = +_, my) : interpolateResolution;
   };
 
   my.paddingLeft = function(_) {
