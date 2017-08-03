@@ -54,19 +54,15 @@ function areaLabel(area) {
   }
   
   function interpolate(data, xValue, y) {
-    var a, b, ax, bx, ay, by, t,
-        i = bisectorX(data, xValue, 0, data.length - 1);
-    if (i > 0) {
-      a = data[i - 1];
-      b = data[i];
-      ax = x(a);
-      ay = y(a);
-      bx = x(b);
-      by = y(b);
-      t = (xValue - ax) / (bx - ax);
-      return ay * (1 - t) + by * t;
-    }
-    return yAccessor(data[i]);
+    var i = bisectorX(data, xValue, 0, data.length - 1),
+        a = data[i - 1],
+        b = data[i],
+        ax = x(a),
+        ay = y(a),
+        bx = x(b),
+        by = y(b),
+        t = (xValue - ax) / (bx - ax);
+    return ay * (1 - t) + by * t;
   }
 
   // Returns true if there is at least one rectangle
