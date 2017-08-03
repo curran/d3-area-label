@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script src="https://unpkg.com/d3@4.10.0"></script>
+    <script src="../build/d3-area-label.js"></script>
+    <title>Area Label Test</title>
+    <style>
+      .area-label {
+        font-family: sans-serif;
+        fill-opacity: 0.7;
+        fill: white;
+      }
+      path {
+        fill-opacity: 0.6;
+      }
+    </style>
+  </head>
+  <body>
+    <svg width="960" height="500"></svg>
+    <script>
+      const generateData = keys => {
+        const n = 100
+        const prev = {}
+        const velocity = {}
+        const data = d3.range(n)
+          .map((d, i) => {
+            const row = { time: i }
+            keys.forEach(key => {
+              velocity[key] = ((velocity[key] || 0) + (Math.random() - .5)) * 0.9
+              const value = Math.max(0.2, (prev[key] || Math.random() * 10) + velocity[key])
+              prev[key] = row[key] = value
+            })
+            return row
+          })
+          .filter((d, i) => !(i % 20))
+        data.keys = keys
+        return data
+      }
+      
+      const svg = d3.select('svg')
+      const width = +svg.attr('width')
+      const height = +svg.attr('height')
+      
+      const stack = d3.stack().offset(d3.stackOffsetWiggle)
+      const xValue = d => d.time
+      const xScale = d3.scaleLinear()
+      const yScale = d3.scaleLinear()
+      const colorScale = d3.scaleOrdinal().range(d3.schemeCategory10)
+
+      const area = d3.area()
+        .x(d => xScale(xValue(d.data)))
+        .y0(d => yScale(d[0]))
+        .y1(d => yScale(d[1]))
+        .curve(d3.curveLinear)
+      
+      const render = (data) => {
+        stack.keys(data.keys)
+        colorScale.domain(data.keys)
+        const stacked = stack(data)
+      	
+        xScale
+          .domain(d3.extent(data, d => xValue(d)))
+          .range([0, width])
+        
+        yScale
+          .domain([
+            d3.min(stacked[0], d => d[0]),
+            d3.max(stacked[stacked.length - 1], d => d[1])
+          ])
+          .range([height, 0])
+        
+        const transition = d3.transition().duration(1000)
+        
+        const paths = svg.selectAll('path').data(stacked)
+        paths
+          .enter().append('path')
+          .merge(paths)
+            .attr('fill', d => colorScale(d.key))
+            .attr('stroke', d => colorScale(d.key))
+          .transition(transition)
+            .attr('d', area)
+
+        const labels = svg.selectAll('text').data(stacked)
+        labels
+          .enter().append('text')
+            .attr('class', 'area-label')
+          .merge(labels)
+            .text(d => d.key)
+          .transition(transition)
+            .attr('transform', d3.areaLabel(area))
+      }
+      
+      const renderGeneratedData = () => {
+        render(generateData([
+          'Leonardo',
+          'Donatello',
+          'Raphael',
+          'Michelangelo'
+        ]))
+      }
+      
+      renderGeneratedData()
+      setInterval(renderGeneratedData, 2000)
+      
+    </script>
+  </body>
+</html>
