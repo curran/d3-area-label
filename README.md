@@ -22,6 +22,17 @@ labels
 
 For more details and context, see [test/index.html](test/index.html) or [run the example on bl.ocks.org](https://bl.ocks.org/curran/2793201c7025c416c471e30d30546c6b).
 
+## How it Works
+The label placement algorithm works as follows:
+
+ * Measure the width and height of the bounding box of the text.
+ * Use the [bisection method](https://en.wikipedia.org/wiki/Bisection_method#Algorithm) to search for the maximum size rectangle that fits within the area and has the same aspect ratio as the measured bounding box.
+   * For each iteration of the bisection method (where a specific size is given for testing), loop through all X coordinates that may potentially be used as the left edge of the label bounding box and perform the following test.
+     * For a given X coordinate to be used as the left edge of the label, `x0`, find the first X coordinate that falls after the right edge of the label `x1`. For each X coordinate `x` between (and including) `x0` and `x1`, compute the `ceiling` and `floor` to be the lowest Y coordinate of the top curve of the area and the highest Y coordinate of the bottom curve of the area, respectively.
+       * If at any point `(ceiling - floor) < height`, where `height` is the height of the label bounding box being tested, break out of this iteration and move on to testing the next X coordinate.
+       * If `(ceiling - floor) >= height` after having checked all `x` between `x0` and `x1`, return the current `x` value as the solution. *Note* Only the first solution found is returned, no attempt is made to optimize this solution, because the optimization occurs at the level of scale choice; the bisection method will converge to a scale for which there is only 1 or very few solutions.
+     * If no solution was found after having looped through all available X coordinates to be used as the left edge of the label, return `false`.
+
 ## Installing
 
 If you use NPM, `npm install d3-area-label`. Otherwise, download the [latest release](https://github.com/curran/d3-area-label/releases/latest).
