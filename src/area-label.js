@@ -20,7 +20,7 @@ function areaLabel(area) {
       epsilon = 0.01,
       maxIterations = 100,
       interpolate = true,
-      interpolateResolution = 200,
+      interpolateResolution = 800,
       paddingLeft = 0,
       paddingRight = 0,
       paddingTop = 0,
