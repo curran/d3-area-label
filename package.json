@@ -15,7 +15,7 @@
     "url": "https://github.com/{USERNAME}/d3-area-label.git"
   },
   "scripts": {
-    "pretest": "rm -rf build && mkdir build && rollup -f umd -n d3 -o build/d3-area-label.js -- index.js",
+    "pretest": "rm -rf build && mkdir build && rollup -f umd -n d3 -g d3-scale:d3,d3-array:d3 -o build/d3-area-label.js -- index.js",
     "test": "tape 'test/**/*-test.js'",
     "prepublish": "npm run test && uglifyjs build/d3-area-label.js -c -m -o build/d3-area-label.min.js",
     "postpublish": "zip -j build/d3-area-label.zip -- LICENSE README.md build/d3-area-label.js build/d3-area-label.min.js"
@@ -24,5 +24,9 @@
     "rollup": "0.27",
     "tape": "4",
     "uglify-js": "2"
+  },
+  "dependencies": {
+    "d3-array": "^1.2.0",
+    "d3-scale": "^1.0.6"
   }
 }

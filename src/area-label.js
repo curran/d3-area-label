@@ -1,4 +1,6 @@
 import fits from './fits';
+import { max, extent, bisector, range } from 'd3-array';
+import { scaleLinear } from 'd3-scale';
 
 // Returns a transform string that will
 // translate and scale the label to the computed position and size.
@@ -86,10 +88,10 @@ function areaLabel(area) {
     var aspect = boxWidth / boxHeight;
 
     // Compute maximum possible label bounding box height in pixels.
-    var maxHeight = d3.max(data, getHeight);
+    var maxHeight = max(data, getHeight);
 
     // Compute the X extent once, to be reused for every height test.
-    var xExtent = d3.extent(data, x);
+    var xExtent = extent(data, x);
 
     // The test function for use in the bisection method.
     var options = {
@@ -98,11 +100,11 @@ function areaLabel(area) {
     };
 
     if (interpolate) {
-      var interpolateResolutionScale = d3.scaleLinear()
+      var interpolateResolutionScale = scaleLinear()
         .domain([0, interpolateResolution - 1])
         .range(xExtent);
 
-      var interpolatedData = d3.range(interpolateResolution)
+      var interpolatedData = range(interpolateResolution)
         .map(function (i) {
           var xValue = interpolateResolutionScale(i);
           return {
@@ -177,7 +179,7 @@ function areaLabel(area) {
   my.x = function(_) {
     if (arguments.length) {
       x = _;
-      bisectorX = d3.bisector(x).right;
+      bisectorX = bisector(x).right;
       return my;
     }
     return x;
