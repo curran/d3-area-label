@@ -6,6 +6,8 @@ A library for placing labels in areas.
 
 [![image](https://user-images.githubusercontent.com/68416/28940637-0376ab84-78b3-11e7-858b-7b0320ea9e5a.png)](https://bl.ocks.org/curran/929c0cb58d5ec8dc1dceb7af20a33320)
 
+[![image](https://user-images.githubusercontent.com/68416/44972649-9294e280-af77-11e8-81ac-22e0155a243f.png)](https://www.axios.com/us-nation-of-immigrants-24723a19-892a-4a7d-8298-f48c563f1526.html)
+
 You can use this to position labels on a [StreamGraph](http://leebyron.com/streamgraph/) or Stacked Area Chart.
 
 Example usage:
