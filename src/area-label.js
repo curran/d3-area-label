@@ -242,7 +242,8 @@ function areaLabel(area) {
   };
 
   my.padding = function(_) {
-    my.paddingX(_).paddingY(_);
+    my.paddingX(_)
+    my.paddingY(_);
   };
 
   if (area) {
