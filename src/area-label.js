@@ -194,7 +194,7 @@ function areaLabel(area) {
   };
 
   my.area = function(area) {
-    my.x(area.x()).y0(area.y0()).y1(area.y1());
+    return my.x(area.x()).y0(area.y0()).y1(area.y1());
   };
 
   my.minHeight = function(_) {
@@ -234,15 +234,15 @@ function areaLabel(area) {
   };
 
   my.paddingX = function(_) {
-    my.paddingLeft(_).paddingRight(_);
+    return my.paddingLeft(_).paddingRight(_);
   };
 
   my.paddingY = function(_) {
-    my.paddingTop(_).paddingBottom(_);
+    return my.paddingTop(_).paddingBottom(_);
   };
 
   my.padding = function(_) {
-    my.paddingX(_).paddingY(_);
+    return my.paddingX(_).paddingY(_);
   };
 
   if (area) {
