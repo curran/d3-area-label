@@ -15,13 +15,12 @@
     "url": "https://github.com/curran/d3-area-label.git"
   },
   "scripts": {
-    "pretest": "rm -rf build && mkdir build && rollup -f umd -n d3 -g d3-scale:d3,d3-array:d3 -o build/d3-area-label.js -- index.js",
-    "test": "tape 'test/**/*-test.js'",
-    "prepublish": "npm run test && uglifyjs build/d3-area-label.js -c -m -o build/d3-area-label.min.js",
+    "build": "rm -rf build && mkdir build && rollup -f umd -n d3 -g d3-scale:d3,d3-array:d3 -o build/d3-area-label.js -- index.js",
+    "prepublish": "npm run build && uglifyjs build/d3-area-label.js -c -m -o build/d3-area-label.min.js",
     "postpublish": "zip -j build/d3-area-label.zip -- LICENSE README.md build/d3-area-label.js build/d3-area-label.min.js"
   },
   "devDependencies": {
-    "rollup": "2.58",
+    "rollup": "2.70",
     "tape": "5",
     "uglify-js": "3"
   },
