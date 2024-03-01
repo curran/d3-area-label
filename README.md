@@ -2,9 +2,9 @@
 
 A library for placing labels in areas.
 
-[![image](https://user-images.githubusercontent.com/68416/28745722-a5d9e7a4-749b-11e7-92a8-227a56cd3ead.png)](https://bl.ocks.org/curran/2793201c7025c416c471e30d30546c6b)
+[![image](https://user-images.githubusercontent.com/68416/28745722-a5d9e7a4-749b-11e7-92a8-227a56cd3ead.png)](https://vizhub.com/curran/6b0cd8ff5e554d43825c4eb273080b91)
 
-[![image](https://user-images.githubusercontent.com/68416/28940637-0376ab84-78b3-11e7-858b-7b0320ea9e5a.png)](https://bl.ocks.org/curran/929c0cb58d5ec8dc1dceb7af20a33320)
+[![image](https://user-images.githubusercontent.com/68416/28940637-0376ab84-78b3-11e7-858b-7b0320ea9e5a.png)](https://vizhub.com/curran/cc85124d2a7d424b92cd691d4fa3ea4c)
 
 [![image](https://user-images.githubusercontent.com/68416/44972649-9294e280-af77-11e8-81ac-22e0155a243f.png)](https://www.axios.com/us-nation-of-immigrants-24723a19-892a-4a7d-8298-f48c563f1526.html)
 
