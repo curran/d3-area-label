@@ -17,16 +17,18 @@
   "scripts": {
     "pretest": "rm -rf build && mkdir build && rollup -f umd -n d3 -g d3-scale:d3,d3-array:d3 -o build/d3-area-label.js -- index.js",
     "test": "tape 'test/**/*-test.js'",
+    "test-interactive": "http-server",
     "prepublish": "npm run test && uglifyjs build/d3-area-label.js -c -m -o build/d3-area-label.min.js",
     "postpublish": "zip -j build/d3-area-label.zip -- LICENSE README.md build/d3-area-label.js build/d3-area-label.min.js"
   },
   "devDependencies": {
-    "rollup": "1.17",
-    "tape": "4",
+    "http-server": "^14.1.1",
+    "rollup": "4.12",
+    "tape": "5",
     "uglify-js": "3"
   },
   "dependencies": {
-    "d3-array": "^2.2.0",
-    "d3-scale": "^3.0.0"
+    "d3-array": "^3.2.4",
+    "d3-scale": "^4.0.2"
   }
 }
